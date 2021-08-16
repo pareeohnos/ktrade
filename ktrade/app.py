@@ -7,7 +7,7 @@ DEBUG = True
 app = Flask(__name__)
 app.config.from_object(__name__)
 
-UI_PATH = '../ui/dist'
+CLIENT_PATH = '../client/dist'
 # CORS(app, resources={r'/*', {'origins': '*'}})
 
 #
@@ -16,22 +16,9 @@ UI_PATH = '../ui/dist'
 # This is only a local-running app, so no nginx or other proxy
 # to handle static assets
 #
-
-# All javascript assets
-@app.route('/js/<path:path>', methods=['GET'])
-def send_js(path):
-    return send_from_directory(f'{UI_PATH}/js', path)
-
-# All CSS assets
-@app.route('/css/<path:path>', methods=['GET'])
-def send_css(path):
-    return send_from_directory(f'{UI_PATH}/css', path)
-
-# All images
-@app.route('/img/<path:path>', methods=['GET'])
-def send_img(path):
-    return send_from_directory(f'{UI_PATH}/img', path)
-
+@app.route('/assets/<path:path>', methods=['GET'])
+def send_asset(path):
+    return send_from_directory(f'{CLIENT_PATH}/assets', path)
 
 #
 # The root path of the app. This will be the initial
@@ -39,7 +26,7 @@ def send_img(path):
 #
 @app.route('/', methods=['GET'])
 def root():
-    return send_from_directory(UI_PATH, 'index.html')
+    return send_from_directory(CLIENT_PATH, 'index.html')
 
 #
 # API ROUTES
@@ -58,7 +45,7 @@ def root():
 #
 @app.route('/<path:path>', methods=['GET'])
 def catch_all(path):
-    return send_from_directory(UI_PATH, 'index.html')
+    return send_from_directory(CLIENT_PATH, 'index.html')
 
 if __name__ == '__main__':
     app.run()
