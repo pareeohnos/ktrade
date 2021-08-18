@@ -1,12 +1,24 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
-import Home from "../views/Home.vue";
+import Dashboard from "../views/Home.vue";
+import Trades from "../views/Home.vue";
+import Config from "../views/Config.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
-    name: "Home",
-    component: Home,
+    name: "Dashboard",
+    component: Dashboard,
   },
+  {
+    path: "/trades",
+    name: "Trades",
+    component: Trades,
+  },
+  {
+    path: "/config",
+    name: "Config",
+    component: Config
+  }
   // {
   //   path: "/config",
   //   name: "Config",

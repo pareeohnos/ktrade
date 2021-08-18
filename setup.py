@@ -9,7 +9,12 @@ with open('LICENSE') as f:
     license = f.read()
 
 requires = [
-    'flask==2.0.1'
+    'flask==2.0.1',
+    'flask-cors==3.0.10',
+    'sqlalchemy==1.4',
+    'Flask-SQLAlchemy==2.5',
+    'Flask-Migrate==3.1.0',
+    'sqlalchemy-utils==0.37.8'
 ]
 
 setup(
