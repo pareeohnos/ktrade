@@ -4,6 +4,7 @@ from application import db
 from settings import ROOT_PATH
 
 from ktrade.models import Configuration, WatchedTicker
+from ktrade.decorators import check_configured
 
 CLIENT_PATH = f'{ROOT_PATH}/client/dist'
 ktrade_app = Blueprint('ktrade_app', __name__)
@@ -25,6 +26,7 @@ def send_asset(path):
 # path that is loaded
 #
 @ktrade_app.route('/', methods=['GET'])
+@check_configured
 def root():
     print(CLIENT_PATH)
     return send_from_directory(CLIENT_PATH, 'index.html')
@@ -36,6 +38,7 @@ def root():
 # or perform actions
 #
 @ktrade_app.route('/trades', methods=['GET'])
+@check_configure
 def trades():
     return jsonify(['test'])
 
@@ -47,5 +50,6 @@ def trades():
 # matched will be handled here
 #
 @ktrade_app.route('/<path:path>', methods=['GET'])
+@check_configure
 def catch_all(path):
     return send_from_directory(CLIENT_PATH, 'index.html')
