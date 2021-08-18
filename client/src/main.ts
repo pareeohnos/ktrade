@@ -8,6 +8,10 @@ import './index.css'
 // Configuration
 axios.defaults.baseURL = "http://localhost:5000";
 
-createApp(App)
-  .use(router)
-  .mount("#app");
+const app = createApp(App);
+app.use(router);
+
+router.isReady().then(() => {
+  app.mount("#app");
+})
+

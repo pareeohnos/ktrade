@@ -42,6 +42,9 @@ def root():
 def trades():
     return jsonify(['test'])
 
+@ktrade_app.route('/initial_setup', methods=['GET'])
+def initial_setup():
+    return send_from_directory(CLIENT_PATH, 'index.html')
 
 #
 # Catch all route. The UI is handling all routing, so if a page

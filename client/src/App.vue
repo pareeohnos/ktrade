@@ -1,6 +1,6 @@
 <template>
   <div class="ktrade bg-gray-200">
-    <navigation />
+    <navigation v-if="!isSetup" />
 
     <div class="p-8 h-full w-full">
       <router-view />
@@ -9,7 +9,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { useRoute } from 'vue-router';
+import { defineComponent, computed, onMounted } from "vue";
 import Navigation from "@/components/Navigation.vue";
 
 export default defineComponent({
@@ -17,5 +18,13 @@ export default defineComponent({
     Navigation,
   },
   name: "App",
+  setup(_, ctx) {
+    const route = useRoute();
+    const isSetup = computed(() => route.name === "Setup");
+    
+    return {
+      isSetup
+    }
+  }
 });
 </script>
