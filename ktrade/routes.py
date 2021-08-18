@@ -38,7 +38,7 @@ def root():
 # or perform actions
 #
 @ktrade_app.route('/trades', methods=['GET'])
-@check_configure
+@check_configured
 def trades():
     return jsonify(['test'])
 
@@ -50,6 +50,6 @@ def trades():
 # matched will be handled here
 #
 @ktrade_app.route('/<path:path>', methods=['GET'])
-@check_configure
+@check_configured
 def catch_all(path):
     return send_from_directory(CLIENT_PATH, 'index.html')
