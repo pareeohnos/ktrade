@@ -1,7 +1,5 @@
-import os
+from ktrade.models import Configuration
 
-basedir = os.path.expanduser('~')
-
-class Config(object):
-    DEBUG = False
-    SQLALCHEMY_DATABASE_URI = f"sqlite://{os.path.join(basedir, 'ktrade.db')}"
+def is_configured():
+    count = Configuration.query.count()
+    return count != 0

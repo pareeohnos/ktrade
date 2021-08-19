@@ -2,13 +2,12 @@
 
 from functools import wraps
 from flask import redirect, url_for
-from ktrade.models import Configuration
+from ktrade.config import is_configured
 
 def check_configured(f):
   @wraps(f)
   def decorated_function(*args, **kwargs):
-    count = Configuration.query.count()
-    if (count == 0):
+    if (not is_configured()):
       return redirect('/initial_setup')
 
     return f(*args, **kwargs)

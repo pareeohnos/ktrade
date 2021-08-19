@@ -5,13 +5,9 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from sqlalchemy_utils.functions import database_exists
 from flask_cors import CORS
-from ktrade import IBApi
+from threading import Thread
 
 db = SQLAlchemy(session_options={'autocommit': True})
-
-
-def ib_loop():
-    ib.run()
 
 def create_app(**config_overrides):
     app = Flask(__name__)
@@ -28,7 +24,11 @@ def create_app(**config_overrides):
     for route in routes:
         app.register_blueprint(route)
 
-    # Start the IB thread
-    ib = IBApi()
+    from ktrade.ib_api import start_listening
 
+    def startThread():
+        ib = Thread(daemon=True, target=start_listening)
+        ib.start()
+
+    startThread()
     return app
