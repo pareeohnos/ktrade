@@ -1,10 +1,17 @@
+# -*- coding: utf-8 -*-
+
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from sqlalchemy_utils.functions import database_exists
 from flask_cors import CORS
+from ktrade import IBApi
 
 db = SQLAlchemy(session_options={'autocommit': True})
+
+
+def ib_loop():
+    ib.run()
 
 def create_app(**config_overrides):
     app = Flask(__name__)
@@ -20,5 +27,8 @@ def create_app(**config_overrides):
 
     for route in routes:
         app.register_blueprint(route)
+
+    # Start the IB thread
+    ib = IBApi()
 
     return app

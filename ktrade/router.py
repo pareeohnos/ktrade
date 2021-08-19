@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from flask import Blueprint, jsonify, send_from_directory
 # from flask_cors import CORS
 from application import db

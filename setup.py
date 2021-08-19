@@ -14,7 +14,8 @@ requires = [
     'sqlalchemy==1.4',
     'Flask-SQLAlchemy==2.5',
     'Flask-Migrate==3.1.0',
-    'sqlalchemy-utils==0.37.8'
+    'sqlalchemy-utils==0.37.8',
+    'ibapi==9.81.1.post1'
 ]
 
 setup(

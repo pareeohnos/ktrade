@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from functools import wraps
 from flask import redirect, url_for
 from ktrade.models import Configuration

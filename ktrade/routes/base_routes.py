@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from flask import Blueprint, jsonify, send_from_directory
 from ktrade.decorators import check_configured
 from settings import ROOT_PATH
