@@ -1,8 +1,13 @@
 <template>
-  <div class="flex flex-col">
+  <div class="flex flex-col mb-4">
     <label class="text-lg">{{ label }}</label>
     <span v-if="description" class="text-sm mb-2">{{ description }}</span>
-    <input class="border border-gray-800 p-2 rounded" :value="modelValue" type="text" @input="$emit('update:modelValue', $event.target.value)" />
+    <input
+      class="border border-gray-400 p-2 rounded"
+      :value="modelValue"
+      type="text"
+      @input="$emit('update:modelValue', $event.target.value)"
+    />
   </div>
 </template>
 
@@ -19,16 +24,13 @@ export default defineComponent({
     description: {
       type: String,
       required: false,
-      default: null
+      default: null,
     },
     modelValue: {
       type: [String, Number],
       required: false,
-      default: null
-    }
+      default: null,
+    },
   },
-  setup(props) {
-    console.log(props);
-  }
 });
 </script>
