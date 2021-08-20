@@ -3,7 +3,7 @@ import os, sys
 import logging
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from application import create_app
+from application import create_app, db
 app = create_app()
 
 @app.before_first_request

@@ -27,7 +27,7 @@ def create_app(**config_overrides):
     from ktrade.ib_api import start_listening
 
     def startThread():
-        ib = Thread(daemon=True, target=start_listening)
+        ib = Thread(daemon=True, target=start_listening, args=[app])
         ib.start()
 
     startThread()
