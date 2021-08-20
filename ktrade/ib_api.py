@@ -30,9 +30,16 @@ def start_listening(app):
 
         ib.connect(host, int(port), 1)
         ib.run()
+        print("HI")
         connected = True
       else:
         # Not configured. We'll wait a bit then try again
         log.debug("App not configured. Will retry in 5 seconds")
-        print("Not configured")
         sleep(5)
+
+    # Now we're connected, we wait for message from the client
+    while True:
+      print("HI")
+      message = inbound_queue.get(block=True)
+      print(f'HELLO, GOT MESSAGE {message.type}')
+      log.debug(f'Received a message: {message.type}')
