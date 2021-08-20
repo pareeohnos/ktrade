@@ -4,6 +4,7 @@ import router from "./router/index";
 import axios from "axios";
 
 import './index.css'
+import './global.css'
 
 // Configuration
 axios.defaults.baseURL = "http://localhost:5000";

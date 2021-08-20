@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white p-8 border border-gray-300 rounded-lg">
+  <div class="bg-white border border-gray-300 rounded-lg">
     <slot />
   </div>
 </template>
@@ -8,6 +8,6 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: "Panel",
+  name: "Panel"
 });
 </script>

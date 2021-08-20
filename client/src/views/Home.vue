@@ -1,13 +1,9 @@
 <template>
-  <div class="flex flex-row">
-    <app-panel class="flex-1 mr-4">
-      <app-header class="mb-8">Trades</app-header>
-      <trades-table />
-      <app-button @click="test">Buy TSLA</app-button>
-    </app-panel>
-
-    <app-panel class="flex-initial w-1/4">
-      <app-header>Account</app-header>
+  <div class="flex flex-col">
+    <app-panel>
+      <base-table class="mb-8" :columns="watchColumns" :row-data="watchedTickers" />
+      <app-input v-model="newTicker" />
+      <app-button>Add</app-button>
     </app-panel>
   </div>
 </template>
@@ -15,17 +11,25 @@
 <script lang="ts">
 import axios from "axios";
 import { defineComponent } from "vue";
+import AppInput from "@/components/AppInput.vue";
 import AppButton from "@/components/AppButton.vue";
 import AppHeader from "@/components/AppHeader.vue";
 import AppPanel from "@/components/AppPanel.vue";
-import TradesTable from "@/components/TradesTable.vue";
+import BaseTable from "@/components/BaseTable.vue";
+import watchColumns from "@/components/watched_tickers/columns";
 
 export default defineComponent({
   components: {
+    AppInput,
     AppButton,
     AppHeader,
     AppPanel,
-    TradesTable,
+    BaseTable
+  },
+  setup() {
+    return {
+      watchColumns
+    }
   },
   methods: {
     test() {
