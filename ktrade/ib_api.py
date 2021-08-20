@@ -4,10 +4,14 @@ from time import sleep
 from ktrade.queues import inbound_queue, outbound_queue
 from ibapi.client import EClient
 from ibapi.wrapper import EWrapper
+from threading import Thread
 
 class IBApi(EWrapper, EClient):
   def __init__(self):
     EClient.__init__(self, self)
+
+def ib_loop(api):
+  api.run()
 
 def start_listening(app):
   """ The main entry point to the background thread which is responsible
@@ -29,8 +33,8 @@ def start_listening(app):
         port = configuration_for("tws_port").value
 
         ib.connect(host, int(port), 1)
-        ib.run()
-        print("HI")
+        api_thread = Thread(target=ib_loop, daemon=True, args=[ib])
+        api_thread.start()
         connected = True
       else:
         # Not configured. We'll wait a bit then try again
@@ -38,8 +42,7 @@ def start_listening(app):
         sleep(5)
 
     # Now we're connected, we wait for message from the client
+    log.info("TWS connected. Awaiting messages...")
     while True:
-      print("HI")
       message = inbound_queue.get(block=True)
-      print(f'HELLO, GOT MESSAGE {message.type}')
-      log.debug(f'Received a message: {message.type}')
+      log.info(f'Received message: {message.message_type}')
