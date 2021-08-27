@@ -27,9 +27,9 @@ def upgrade():
     )
     op.create_table('watched_tickers',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('ticket', sa.String(), nullable=False),
+    sa.Column('ticker', sa.String(), nullable=False),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('ticket')
+    sa.UniqueConstraint('ticker')
     )
     # ### end Alembic commands ###
 

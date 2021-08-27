@@ -12,11 +12,13 @@ CLIENT_PATH = f'{ROOT_PATH}/client/dist'
 
 from ktrade.routes.config_routes import routes as config_routes
 from ktrade.routes.trade_routes import routes as trade_routes
+from ktrade.routes.watch_routes import routes as watch_routes
 from ktrade.routes.base_routes import routes as base_routes
 
 routes = [
     config_routes,
     trade_routes,
+    watch_routes,
     base_routes
 ]
 
