@@ -35,5 +35,6 @@ def configure():
   ]
 
   db.session.bulk_save_objects(objects)
+  db.session.commit()
 
   return jsonify({ 'saved': True })

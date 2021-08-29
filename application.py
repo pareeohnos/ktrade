@@ -7,7 +7,7 @@ from sqlalchemy_utils.functions import database_exists
 from flask_cors import CORS
 from threading import Thread
 
-db = SQLAlchemy(session_options={'autocommit': True})
+db = SQLAlchemy()
 
 def create_app(**config_overrides):
     app = Flask(__name__)

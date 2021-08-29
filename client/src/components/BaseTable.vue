@@ -1,5 +1,5 @@
 <template>
-  <table class="w-full divide-y divide-gray-200">
+  <table class="w-full divide-y divide-gray-200 rounded rounded-lg">
     <thead class="bg-gray-50">
       <tr>
         <th class="header" v-for="col in columns" :key="col.field">{{ col.headerName }}</th>
@@ -7,7 +7,12 @@
     </thead>
     <tbody>
       <tr v-for="row in rowData" :key="row.id">
-        <td v-for="col in colums" :key="col.field" class="px-6 py-4 whitespace-nowrap">{{ row[col.field] }}</td>
+        <td v-for="col in columns" :key="col.field" class="px-6 py-4 whitespace-nowrap">
+          <template v-if="col.field === 'actions'">
+            <slot name="actions" :ticker="row" />
+          </template>
+          <template v-else>{{ row[col.field] }}</template>
+        </td>
       </tr>
     </tbody>
   </table>

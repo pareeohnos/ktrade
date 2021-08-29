@@ -7,6 +7,13 @@ from sqlalchemy.exc import IntegrityError
 
 routes = Blueprint('watch_routes', __name__)
 
+@routes.route('/watches', methods=['GET'])
+def watches():
+  watches = WatchedTicker.query.all()
+  schema = WatchedTickerSchema()
+
+  return jsonify(schema.dump(watches, many=True))
+
 # Buy a ticker
 @routes.route('/watch', methods=['POST'])
 def start_watching():
@@ -16,6 +23,7 @@ def start_watching():
   try:
     watch = WatchedTicker(ticker=ticker)
     db.session.add(watch)
+    db.session.commit()
     db.session.flush()
 
     schema = WatchedTickerSchema()
@@ -25,3 +33,22 @@ def start_watching():
     return jsonify({
       "error": f'Already watching {ticker}'
     }), 422
+
+@routes.route('/unwatch', methods=['POST'])
+def unwatch():
+  params = request.get_json()
+  ticker = params['ticker'].upper()
+
+  watched_ticker = WatchedTicker.query.filter_by(ticker=ticker).first()
+
+  if (watched_ticker is None):
+    return jsonify({
+      'error': f'You are not watching {ticker}'
+    }), 422
+
+
+  schema = WatchedTickerSchema()
+  db.session.delete(watched_ticker)
+  db.session.commit()
+
+  return schema.dump(watched_ticker)
