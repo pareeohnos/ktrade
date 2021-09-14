@@ -17,6 +17,49 @@ so entering a trade should take a matter of seconds allowing you to get an entry
 
 **An automated trading bot** - KTrade does NOT perform any automatic trading of any kind. One day it might respond to alerts and buy for you, but currently it has no automation
 
+## Get started
+
+The app is very early days so these instructions will change when a final release is ready. For now though
+
+1. Clone the code from github
+2. Install the dependencies
+
+```shell
+pip install -f requirements.txt
+```
+
+3. Prepare the database
+
+
+```
+flask db upgrade
+```
+
+4. Run the back end
+
+```
+flask run
+```
+
+5. In a separate terminal, run the front end (these won't always be separate)
+
+```
+yarn dev
+```
+
+6. Open your browser and go to
+
+```
+http://localhost:3000/initial_setup
+```
+
+Fill out the form, and save the details. Once done if you're not redirected automatically, go o
+
+```
+http://localhost:3000
+```
+
+7. Start playing around
 
 
 ### Notes
