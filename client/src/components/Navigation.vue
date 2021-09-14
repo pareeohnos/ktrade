@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-gray-800 flex flex-col text-white pt-4 px-8">
+  <div class="bg-gray-700 flex flex-col text-white pt-4 px-8">
     <h1 class="text-2xl">KTrade</h1>
     <div class="flex flex-row mt-auto">
       <router-link class="menu-item" to="/">Dashboard</router-link>
@@ -39,7 +39,7 @@ export default defineComponent({
       @apply top-2;
       @apply rounded-t;
       z-index: -1;
-      @apply bg-yellow-400;
+      @apply bg-blue-400;
     }
   }
 }

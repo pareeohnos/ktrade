@@ -4,6 +4,8 @@ from flask import Blueprint, jsonify, send_from_directory, request
 from application import db
 from ktrade.models import WatchedTicker, WatchedTickerSchema
 from sqlalchemy.exc import IntegrityError
+from ktrade.queues import inbound_queue
+from ktrade.queue_messages.watch_message import WatchMessage, UnwatchMessage
 
 routes = Blueprint('watch_routes', __name__)
 
@@ -21,10 +23,12 @@ def start_watching():
   ticker = params['ticker'].upper()
 
   try:
-    watch = WatchedTicker(ticker=ticker)
+    watch = WatchedTicker(ticker=ticker, price=0, high=0, low=0)
     db.session.add(watch)
     db.session.commit()
     db.session.flush()
+
+    inbound_queue.put(WatchMessage(ticker=ticker))
 
     schema = WatchedTickerSchema()
     return schema.dump(watch)
@@ -47,6 +51,7 @@ def unwatch():
     }), 422
 
 
+  inbound_queue.put(UnwatchMessage(ticker=ticker))
   schema = WatchedTickerSchema()
   db.session.delete(watched_ticker)
   db.session.commit()

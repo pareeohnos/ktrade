@@ -5,7 +5,8 @@
       bg-blue-500
       hover:bg-blue-600
       text-white
-      p-2
+      px-2
+      py-1
       cursor-pointer
       inline-block
     "

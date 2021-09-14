@@ -2,8 +2,9 @@ import WatchedTicker from "@/data/models/watched-ticker";
 import axios from "axios";
 
 export const buy = (watched: WatchedTicker): Promise<WatchedTicker> => {
-  alert(`BUY ${watched.ticker}`);
-  return Promise.reject();
+  return axios.post("/trades", {
+    ticker: watched.ticker
+  }).then(({ data }) => data);
 };
 
 export const unwatch = (watched: WatchedTicker): Promise<WatchedTicker> => {
@@ -14,10 +15,5 @@ export const unwatch = (watched: WatchedTicker): Promise<WatchedTicker> => {
     }).then(({ data }) => data);
   }
 
-  return Promise.reject();
-};
-
-export const trim = (watched: WatchedTicker): Promise<WatchedTicker> => {
-  alert(`TRIM ${watched.ticker}`);
   return Promise.reject();
 };

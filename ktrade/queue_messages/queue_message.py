@@ -1,6 +1,5 @@
 class QueueMessage:
-  def __init__(self, type, ticker):
+  def __init__(self, type):
     self.message_type = type
-    self.ticker = ticker
 
     return

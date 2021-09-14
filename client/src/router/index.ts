@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import Dashboard from "../views/Home.vue";
-import Trades from "../views/Home.vue";
+import Trades from "../views/Trades.vue";
 import Config from "../views/Config.vue";
 import Setup from "../views/Setup.vue";
 

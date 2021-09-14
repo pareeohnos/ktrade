@@ -1,19 +1,14 @@
 <template>
-  <div class="flex flex-col">
-    <app-panel class="overflow-hidden">
-      <base-table
-        :columns="watchColumns"
-        :row-data="rowData">
-
-        <template #actions="{ ticker }">
-          <app-button @click="buy(ticker)">Buy</app-button>
-          <app-button @click="trim(ticker)" class="ml-4">Trim</app-button>
-          <app-button @click="unwatchTicker(ticker)" class="ml-4">Unwatch</app-button>
-        </template>
-      </base-table>
+  <div class="flex flex-col h-full">
+    <app-panel class="overflow-hidden flex-1">
+      <ag-grid-vue
+        class="h-full w-full ag-theme-alpine"
+        :columnDefs="columnDefs"
+        :gridOptions="gridOptions"
+        @grid-ready="gridReady" />
     </app-panel>
 
-    <app-panel class="p-8 mt-4">
+    <app-panel class="p-8 mt-4 flex-initial">
       <div class="w-64">
         <app-input v-model="newTicker" label="Watch a new ticker" />
         <app-button @click="addTicker">Add</app-button>
@@ -23,69 +18,98 @@
 </template>
 
 <script lang="ts">
+import { AgGridVue } from 'ag-grid-vue3';
 import axios from "axios";
-import { defineComponent, onMounted, ref, computed } from "vue";
+import { defineComponent, onMounted, ref } from "vue";
 import AppInput from "../components/AppInput.vue";
 import AppButton from "../components/AppButton.vue";
 import AppHeader from "../components/AppHeader.vue";
-import BaseTable from "../components/BaseTable.vue";
-import watchColumns from "../components/watched_tickers/columns";
-import { unwatch, buy, trim } from "../components/watched_tickers/actions";
+import {
+  colApi,
+  columnDefs,
+  gridApi,
+  gridReady,
+  rowActionClicked,
+  rowData,
+  gridOptions
+} from "../components/watched_tickers/gridSetup";
 import AppPanel from "../components/AppPanel.vue";
+import ActionsCellRenderer from "../components/watched_tickers/ActionsCellRenderer.vue";
+
+export interface Home {
+  rowActionClicked: () => void;
+}
 
 export default defineComponent({
   components: {
+    ActionsCellRenderer,
+    AgGridVue,
     AppInput,
     AppButton,
     AppHeader,
     AppPanel,
-    BaseTable,
+  },
+  sockets: {
+    tickerUpdated({ ticker, field, value }) {
+      const itemToUpdate = this.rowData[ticker];
+      itemToUpdate[field] = value;
+
+      this.gridApi.applyTransactionAsync({
+        update: [itemToUpdate]
+      });
+    },
   },
   setup() {
     const newTicker = ref("");
-    const watchedTickers = ref({});
+
     const addTicker = () => {
       axios
         .post("/watch", {
           ticker: newTicker.value,
         })
         .then(({ data }) => {
-          watchedTickers.value[data.id] = { ...data };
+          gridApi.value.applyTransaction({
+            add: [data]
+          })
         })
-        .catch(({ response }) => {
+        .catch((err) => {
           // console.log(error.response.data.error);
-          alert(response.data.error);
+          if (err.response?.data?.error) {
+            alert(err.response?.data.error);
+          } else {
+            alert("Unexpected error occurred");
+            console.log(err);
+          }
           // alert(error);
         });
     };
-    const rowData = computed(() => {
-      console.log(watchedTickers.value);
-      return Object.values(watchedTickers.value);
-    });
-
-    const unwatchTicker = (watched) => {
-      unwatch(watched).then(() => delete watchedTickers.value[watched.id]);
-    }
 
     onMounted(async () => {
-      await axios.get("/watches").then(({ data }) =>
-        data.forEach(ticker => watchedTickers.value[ticker.id] = { ...ticker }))
+      // Get our list of watched tickers and load them into
+      // memory, and the table
+      await axios.get("/watches").then(({ data }) => {
+        data.forEach(watchedTicker => {
+          rowData.value[watchedTicker.ticker] = watchedTicker;
+        })
+
+        if (gridApi.value) {
+          gridApi.value.setRowData(data);
+        }
+      });
     });
 
     return {
       addTicker,
       newTicker,
-      watchColumns,
+      columnDefs,
+      rowActionClicked,
       rowData,
-      unwatchTicker,
-      buy,
-      trim
+
+      gridApi,
+      colApi,
+      gridOptions,
+      gridReady
     };
-  },
-  methods: {
-    test() {
-      axios.post("/buy");
-    },
   },
 });
 </script>
