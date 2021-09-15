@@ -2,38 +2,3 @@
 # yarn lockfile v1
 
 
-"@ag-grid-community/all-modules@^26.0.0":
-  version "26.0.0"
-  resolved "https://registry.yarnpkg.com/@ag-grid-community/all-modules/-/all-modules-26.0.0.tgz#83412145eef75a8f7455f145ae05ed7de941cefd"
-  integrity sha512-ACwYH7ZN8VanhUjAOS7e3HxebrgnKV/CEa8WhyyYe3D24oP7GSHs058CGhKcJyY1urR6XOdFC3fymZSaVjSGPg==
-  dependencies:
-    "@ag-grid-community/client-side-row-model" "~26.0.0"
-    "@ag-grid-community/core" "~26.0.0"
-    "@ag-grid-community/csv-export" "~26.0.0"
-    "@ag-grid-community/infinite-row-model" "~26.0.0"
-
-"@ag-grid-community/client-side-row-model@~26.0.0":
-  version "26.0.0"
-  resolved "https://registry.yarnpkg.com/@ag-grid-community/client-side-row-model/-/client-side-row-model-26.0.0.tgz#f750565719131c380aeac3911f03666ce257d326"
-  integrity sha512-dt2bbXvhkIf7vSAHzATeVUE+z8IRBUMNcCJiO8OfabyGexxKFyhYhw1XuyOTHzi/uTAX/uq3wz5Q5tmC7OkjtQ==
-  dependencies:
-    "@ag-grid-community/core" "~26.0.0"
-
-"@ag-grid-community/core@~26.0.0":
-  version "26.0.0"
-  resolved "https://registry.yarnpkg.com/@ag-grid-community/core/-/core-26.0.0.tgz#89fb08602a20a14a05d9a78168040d6c195ae75c"
-  integrity sha512-3d7HuTrTFv1qjwbNzuJqkqJm2SCyGg921zD7k4V9brzAjj+tUNTCVODaiKJMUP/UiY1ZqH+D6TRvDmJbltlCcA==
-
-"@ag-grid-community/csv-export@~26.0.0":
-  version "26.0.0"
-  resolved "https://registry.yarnpkg.com/@ag-grid-community/csv-export/-/csv-export-26.0.0.tgz#f00e1373c31961266eac1f462934965d162502c9"
-  integrity sha512-GFOQmad4UhmEapLSYKuCd4hL/x+m3tbCA9OFk5PHRXtcJUD3AnoocaOccCd8EflGZVKFcWiUuLZ/l84MUPrOEg==
-  dependencies:
-    "@ag-grid-community/core" "~26.0.0"
-
-"@ag-grid-community/infinite-row-model@~26.0.0":
-  version "26.0.0"
-  resolved "https://registry.yarnpkg.com/@ag-grid-community/infinite-row-model/-/infinite-row-model-26.0.0.tgz#825e406d838b85a8707a6b325d04e56025abe729"
-  integrity sha512-adPv4eXB2/p1513BFkxkrFDfAxDFxCF807+ZbLSIcE6ZNT6yvQp7x8R8M14OYEa7JiNCkQs3KEKRfzEapaIMCA==
-  dependencies:
-    "@ag-grid-community/core" "~26.0.0"
