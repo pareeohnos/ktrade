@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@types/node": "^16.6.1",
-    "ag-grid-community": "^26.0.0",
+    
     "ag-grid-vue3": "^26.0.0",
     "autoprefixer": "^10.3.1",
     "axios": "^0.21.1",

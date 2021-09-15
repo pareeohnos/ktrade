@@ -28,6 +28,7 @@ import {
 } from "../components/trades/gridSetup";
 import AppPanel from "../components/AppPanel.vue";
 import ActionsCellRenderer from "../components/trades/ActionsCellRenderer.vue";
+import Trade from "@/data/models/trade";
 
 export interface Home {
   rowActionClicked: () => void;
@@ -59,8 +60,8 @@ export default defineComponent({
       // Get our list of watched tickers and load them into
       // memory, and the table
       await axios.get("/trades").then(({ data }) => {
-        data.forEach(trade => {
-          rowData.value[trade.order_id] = trade;
+        data.forEach((trade: Trade) => {
+          rowData.value[trade.orderId] = trade;
         })
 
         if (gridApi.value) {

@@ -36,7 +36,7 @@ class Account(db.Model):
 class AccountSchema(Schema):
   id = fields.Int()
   number = fields.String()
-  total_size = fields.Float()
+  totalSize = fields.Float()
 
 #
 # Trades
@@ -74,15 +74,15 @@ class Trade(db.Model):
 class TradeSchema(Schema):
   id = fields.Int()
   ticker = fields.String()
-  ordered_at = fields.DateTime()
+  orderedAt = fields.DateTime()
   filled = fields.Float()
   remainig = fields.Float()
-  price_at_order = fields.Float()
-  order_type = fields.String()
-  order_id = fields.Integer()
-  stop_order_id = fields.Integer()
-  current_stop = fields.Float()
-  current_position_size = fields.Float()
+  priceAtOrder = fields.Float()
+  orderType = fields.String()
+  orderId = fields.Integer()
+  stopOrderId = fields.Integer()
+  currentStop = fields.Float()
+  currentPositionSize = fields.Float()
 
 class TradeActivity(db.Model):
   """

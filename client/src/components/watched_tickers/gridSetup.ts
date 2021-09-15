@@ -1,7 +1,9 @@
 import { ref } from "vue";
 import WatchedTicker from "@/data/models/watched-ticker";
 import { unwatch, buy } from "@/components/watched_tickers/actions";
+// @ts-ignore
 import { notify } from "notiwind"
+import { GridReadyEvent, GridApi, ColumnApi } from "@ag-grid-community/all-modules";
 
 const gridOptions =  {
   getRowNodeId: (data: WatchedTicker) => {
@@ -9,13 +11,13 @@ const gridOptions =  {
   }
 };
 
-const gridApi = ref(null);
-const colApi = ref(null);
-const rowData = ref({});
+const gridApi = ref<GridApi>();
+const colApi = ref<ColumnApi>();
+const rowData = ref<{[key: string]: WatchedTicker}>({});
 const rowActionClicked = (action: String, watchedTicker: WatchedTicker) => {
   if (action === "UNWATCH") {
     unwatch(watchedTicker).then(() => {
-      gridApi.value.applyTransaction({ remove: [watchedTicker] });
+      gridApi?.value?.applyTransaction({ remove: [watchedTicker] });
       notify({
         group: "notifications",
         title: "Success",
@@ -45,7 +47,7 @@ const columnDefs = [
   },
 ];
 
-const gridReady = params => {
+const gridReady = (params: GridReadyEvent) => {
   gridApi.value = params.api;
   colApi.value = params.columnApi;
   gridApi.value.setRowData(Object.values(rowData.value));

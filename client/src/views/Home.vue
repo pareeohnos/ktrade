@@ -35,6 +35,7 @@ import {
 } from "../components/watched_tickers/gridSetup";
 import AppPanel from "../components/AppPanel.vue";
 import ActionsCellRenderer from "../components/watched_tickers/ActionsCellRenderer.vue";
+import WatchedTicker from "@/data/models/watched-ticker";
 
 export interface Home {
   rowActionClicked: () => void;
@@ -50,17 +51,18 @@ export default defineComponent({
     AppPanel,
   },
   sockets: {
-    tickerUpdated({ ticker, field, value }) {
-      const itemToUpdate = this.rowData[ticker];
+    tickerUpdated({ ticker, field, value }: { ticker: string, field: string, value: number }) {
+      let itemToUpdate: WatchedTicker = this.rowData[ticker];
+      // @ts-ignore
       itemToUpdate[field] = value;
 
-      this.gridApi.applyTransactionAsync({
+      this.gridApi?.applyTransactionAsync({
         update: [itemToUpdate]
       });
     },
   },
   setup() {
-    const newTicker = ref("");
+    const newTicker = ref<string>("");
 
     const addTicker = () => {
       axios
@@ -68,7 +70,7 @@ export default defineComponent({
           ticker: newTicker.value,
         })
         .then(({ data }) => {
-          gridApi.value.applyTransaction({
+          gridApi.value?.applyTransaction({
             add: [data]
           })
         })
@@ -88,7 +90,7 @@ export default defineComponent({
       // Get our list of watched tickers and load them into
       // memory, and the table
       await axios.get("/watches").then(({ data }) => {
-        data.forEach(watchedTicker => {
+        data.forEach((watchedTicker: WatchedTicker) => {
           rowData.value[watchedTicker.ticker] = watchedTicker;
         })
 

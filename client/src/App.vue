@@ -50,6 +50,7 @@
 import { useRoute } from "vue-router";
 import { defineComponent, computed, onMounted } from "vue";
 import Navigation from "@/components/Navigation.vue";
+// @ts-ignore
 import { notify } from "notiwind";
 
 export default defineComponent({
@@ -58,7 +59,7 @@ export default defineComponent({
   },
   name: "App",
   sockets: {
-    info({ message }) {
+    info({ message }: { message: string }) {
       notify({
         group: "notifications",
         title: "Info",
@@ -66,7 +67,7 @@ export default defineComponent({
         type: "info"
       }, 5000);
     },
-    warning({ message }) {
+    warning({ message }: { message: string }) {
       notify({
         group: "notifications",
         title: "Warning",
@@ -74,7 +75,7 @@ export default defineComponent({
         type: "warning"
       }, 5000);
     },
-    error({ message }) {
+    error({ message }: { message: string }) {
       notify({
         group: "notifications",
         title: "Error",
@@ -82,7 +83,7 @@ export default defineComponent({
         type: "error"
       }, 5000);
     },
-    success({ message }) {
+    success({ message }: { message: string }) {
       notify({
         group: "notifications",
         title: "Success",

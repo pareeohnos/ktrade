@@ -1,11 +1,12 @@
-import { createApp } from 'vue'
-import App from './App.vue'
+import { createApp } from 'vue';
+import App from './App.vue';
 import router from "./router/index";
 import axios from "axios";
 import store from "./store/index";
-import SocketIO from 'socket.io-client'
-import VueSocketIO from 'vue-socket.io'
-import Notifications from 'notiwind'
+import SocketIO from 'socket.io-client';
+import VueSocketIO from 'vue-socket.io';
+// @ts-ignore
+import Notifications from 'notiwind';
 
 import './index.css'
 import './global.css'

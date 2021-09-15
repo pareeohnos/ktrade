@@ -6,7 +6,7 @@
       class="border border-gray-400 p-2 rounded"
       :value="modelValue"
       type="text"
-      @input="$emit('update:modelValue', $event.target.value)"
+      @input="onInput"
     />
   </div>
 </template>
@@ -32,5 +32,16 @@ export default defineComponent({
       default: null,
     },
   },
+  setup(_props, { emit }) {
+    const onInput = (e: Event) => {
+      const target = (<HTMLInputElement>e.target);
+      const val = target.value;
+      
+      emit('update:modelValue', val);
+    };
+    return {
+      onInput
+    }
+  }
 });
 </script>

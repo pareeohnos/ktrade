@@ -13,8 +13,9 @@ export default defineComponent({
   components: {
     AppButton
   },
+  props: ["params"],
   methods: {
-    clicked(type) {
+    clicked(type: string) {
       this.params.click(type, this.params.data);
     }
   }

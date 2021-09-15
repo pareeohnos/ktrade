@@ -1,8 +1,9 @@
 import { ref } from "vue";
 import Trade from "@/data/models/trade";
-// import { unwatch, buy } from "@/components/watched_tickers/actions";
 import { trim } from "./actions";
+// @ts-ignore
 import { notify } from "notiwind"
+import { GridReadyEvent, GridApi, ColumnApi } from "@ag-grid-community/all-modules";
 
 const gridOptions = {
   getRowNodeId: (data: Trade) => {
@@ -10,10 +11,10 @@ const gridOptions = {
   }
 };
 
-const gridApi = ref(null);
-const colApi = ref(null);
-const rowData = ref({});
-const rowActionClicked = (action: String, trade: Trade) => {
+const gridApi = ref<GridApi>();
+const colApi = ref<ColumnApi>();
+const rowData = ref<{ [key: string]: Trade; }>({});
+const rowActionClicked = (action: string, trade: Trade) => {
   if (action === "SELL") {
     // Get rid of the lot!
   } else {
@@ -39,14 +40,14 @@ const columnDefs = [
     headerName: "Actions",
     cellRenderer: "ActionsCellRenderer",
     cellRendererParams: {
-      click(type: String, trade) {
+      click(type: string, trade: Trade) {
         rowActionClicked(type, trade);
       }
     }
   },
 ];
 
-const gridReady = params => {
+const gridReady = (params: GridReadyEvent) => {
   gridApi.value = params.api;
   colApi.value = params.columnApi;
   gridApi.value.setRowData(Object.values(rowData.value));

@@ -1,7 +1,7 @@
 interface Trade {
-  id: Number,
+  id: number,
   ticker: String,
-  orderId: Number
+  orderId: number
 }
 
 class Trade {

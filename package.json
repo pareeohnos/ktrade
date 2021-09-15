@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@ag-grid-community/all-modules": "^26.0.0"
+  }
+}
