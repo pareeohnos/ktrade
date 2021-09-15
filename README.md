@@ -35,31 +35,19 @@ pip install -f requirements.txt
 flask db upgrade
 ```
 
-4. Run the back end
+4. Run the app
 
 ```
 flask run
 ```
 
-5. In a separate terminal, run the front end (these won't always be separate)
+5. Open your browser and go to
 
 ```
-yarn dev
+http://localhost:5000
 ```
 
-6. Open your browser and go to
-
-```
-http://localhost:3000/initial_setup
-```
-
-Fill out the form, and save the details. Once done if you're not redirected automatically, go o
-
-```
-http://localhost:3000
-```
-
-7. Start playing around
+On first load, you should get the configuration screen. Fill it out and save your settings.
 
 
 ### Notes
@@ -90,6 +78,10 @@ are open. If you do not, then there are no guarantees it will work correctly.
 If you're enjoying KTrade and want to help continue it's development, or just want to say thank you then you can sponsor me.
 
 [:heart: Sponsor me](https://github.com/sponsors/pareeohnos)
+
+### Sponsors
+
+A huge thank you to the following people, who have helped sponsor the development of KTrade
 
 ### Contributing
 

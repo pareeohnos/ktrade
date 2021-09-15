@@ -31,7 +31,7 @@ Run `Volar: Switch TS Plugin on/off` from VSCode command palette.
 
 ## Contributors ✨
 
-Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+A HUGE thank you to the following people who have hugely helped in the development of KTrade ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
