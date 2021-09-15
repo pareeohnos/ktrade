@@ -1,0 +1,25 @@
+{
+  "projectName": "ktrade",
+  "projectOwner": "pareeohnos",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": true,
+  "commitConvention": "none",
+  "contributors": [
+    {
+      "login": "Dolivent",
+      "name": "dolivent",
+      "avatar_url": "https://avatars.githubusercontent.com/u/89076425?v=4",
+      "profile": "https://github.com/Dolivent",
+      "contributions": [
+        "financial",
+        "ideas"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7
+}
