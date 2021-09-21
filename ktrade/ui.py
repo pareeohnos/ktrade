@@ -1,7 +1,8 @@
 from application import socketio
+from ktrade.models import WatchedTicker
 
-def notify_ticker_update(ticker, field, value):
-  socketio.emit("tickerUpdated", { "ticker": ticker, "field": field, "value": value })
+def ticker_price_update(watched_ticker: WatchedTicker, field: str, value: float):
+  socketio.emit("tickerUpdated", { "watched_ticker_id": watched_ticker.id, "field": field, "value": value })
 
 def info(message):
   socketio.emit("info", { "message": message })

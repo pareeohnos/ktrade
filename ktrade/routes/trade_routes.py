@@ -2,10 +2,13 @@
 
 from flask import Blueprint, jsonify, send_from_directory, request
 from ktrade.decorators import check_configured
-from ktrade.models import Trade, TradeSchema
+from ktrade.models import Trade, TradeSchema, WatchedTicker
 from ktrade.queue_messages.buy_message import BuyMessage
 from ktrade.queue_messages.trim_message import TrimMessage
 from ktrade.queues import inbound_queue
+from datetime import datetime
+from ktrade.enums.trade_status import TradeStatus
+from db_manager import ManagedSession
 
 routes = Blueprint('trade_routes', __name__)
 
@@ -13,8 +16,20 @@ routes = Blueprint('trade_routes', __name__)
 @check_configured
 def create():
   params = request.get_json()
-  ticker = params['ticker'].upper()
-  inbound_queue.put(BuyMessage(ticker=ticker))
+  id = params['watched_ticker_id']
+
+  with ManagedSession() as session:
+    watched_ticker = WatchedTicker.find(session, id)
+    trade = Trade(
+      ticker=watched_ticker.ticker,
+      filled=0,
+      ordered_at=datetime.now(),
+      order_status=TradeStatus.PENDING.value,
+      order_type="MKT")
+
+    session.add(trade)
+  
+  inbound_queue.put(BuyMessage(watched_ticker=watched_ticker, trade=trade))
 
   return jsonify("OK")
 
@@ -24,6 +39,8 @@ def create():
 def initial_setup():
   trades = Trade.query.all()
   schema = TradeSchema()
+
+  print(f"TS {schema}")
 
   return jsonify(schema.dump(trades, many=True))
 

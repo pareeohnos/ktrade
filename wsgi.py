@@ -3,6 +3,7 @@ import os, sys
 import logging
 from threading import Thread
 from application import create_app, db
+from ktrade.switchboard import Switchboard
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 app = create_app()
@@ -16,9 +17,11 @@ if os.environ["FLASK_RUN_FROM_CLI"]:
 
     if command == "run":
         # This is the `run` command so fire up the background threads
-        from ktrade.ib_api import start_listening
-        ib = Thread(daemon=True, target=start_listening, args=[app])
-        ib.start()
+        switchboard = Switchboard()
+        switchboard.start(app)
+        # from ktrade.ib_api import start_listening
+        # ib = Thread(daemon=True, target=start_listening, args=[app])
+        # ib.start()
 
 @app.before_first_request
 def initialise_db():

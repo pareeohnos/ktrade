@@ -1,5 +1,4 @@
 from ktrade.models import Configuration
-from settings import SQLALCHEMY_DATABASE_URI
 from sqlalchemy_utils import database_exists
 
 def is_configured():
@@ -11,7 +10,7 @@ def is_configured():
     count = Configuration.query.count()
     return count != 0
   except:
-    return false
+    return False
 
 def configuration_for(key):
   """Retrieve the configuration value for a specified key"""

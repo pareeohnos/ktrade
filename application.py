@@ -7,9 +7,11 @@ from sqlalchemy_utils.functions import database_exists
 from flask_cors import CORS
 from threading import Thread
 from flask_socketio import SocketIO
+from db_manager import init_engine, init_session_factory
+from settings import SQLALCHEMY_DATABASE_URI
 import os
 
-db = SQLAlchemy()
+db = SQLAlchemy(session_options={"expire_on_commit": False})
 socketio = SocketIO(cors_allowed_origins="*")
 migrate = Migrate()
 
@@ -29,8 +31,12 @@ def create_app(**config_overrides):
     socketio.init_app(app)
 
     # Init the app and the db migration lib
-    db.init_app(app)
+    db.init_app(app, )
     migrate.init_app(app, db, render_as_batch=True)
+
+    # Setup our actual db that is used throughout the app
+    init_engine(SQLALCHEMY_DATABASE_URI, connect_args={"check_same_thread": False})
+    init_session_factory()
 
     # Setup our API routes
     from ktrade.router import routes
