@@ -14,11 +14,11 @@ def ticker_price_update(watched_ticker: WatchedTicker, field: int, price: float)
   if field == TickTypeEnum.LAST or field == TickTypeEnum.CLOSE:
     price_updated(watched_ticker, price)
   
-  elif field == TickTypeEnum.HIGH:
-    high_updated(watched_ticker, price)
+  # elif field == TickTypeEnum.HIGH:
+  #   high_updated(watched_ticker, price)
 
-  elif field == TickTypeEnum.LOW:
-    low_updated(watched_ticker, price)
+  # elif field == TickTypeEnum.LOW:
+  #   low_updated(watched_ticker, price)
 
 def price_updated(watched_ticker: WatchedTicker, price: float):
   """

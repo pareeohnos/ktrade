@@ -146,3 +146,23 @@ def trade_on_hold(trade: Trade):
     )
 
     session.add(hold_activity)
+
+def trade_status_changed(trade: Trade, status: TradeStatus, description: str):
+  """
+  Updates the status of the trade, and sets a description
+  explaining why that status now applies
+  """
+
+  with ManagedSession() as session:
+    trade = Trade.find(session, trade.id)
+    trade.order_status = status.value
+    trade.order_status_desc = description
+
+    activity = TradeActivity(
+      when=datetime.now(),
+      activity_type=TradeActivityType.STATUS_UPDATED.value,
+      trade_id=trade.id
+    )
+
+    session.add(activity)
+

@@ -84,6 +84,7 @@ class IBProvider(ProviderInterface):
     order.action = "BUY"
     order.totalQuantity = position_size
     order.orderType = "MKT"
+    order.outsideRth = False
     order.transmit = False
 
     # And the stop loss
@@ -94,6 +95,7 @@ class IBProvider(ProviderInterface):
     stop_order.totalQuantity = position_size
     stop_order.orderId = self.api.next_request_id()
     stop_order.parentId = order_id
+    stop_order.outsideRth = False
     stop_order.transmit = True
 
     # And go!
@@ -124,6 +126,7 @@ class IBProvider(ProviderInterface):
     sell_order.orderId = ib.next_request_id()
     sell_order.totalQuantity = sell_amount
     sell_order.transmit = True
+    sell_order.outsideRth = False
     self.api.place_order(trade, contract, sell_order)
 
     # Move stop
@@ -135,6 +138,7 @@ class IBProvider(ProviderInterface):
     stop_order.totalQuantity = stop_size
     stop_order.orderId = self.api.next_request_id()
     stop_order.parentId = trade.order_id
+    stop_order.outsideRth = False
     stop_order.transmit = True
 
     # Had problems modifying the existing order, so safer to just

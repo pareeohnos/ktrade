@@ -1,10 +1,12 @@
 import logging
+import re
+
 from ibapi.client import EClient, TickAttribLast, TickAttrib, Order, ExecutionFilter
 from ibapi.wrapper import EWrapper, TickType, TickTypeEnum, BarData
 from ibapi.contract import Contract
 
 from ktrade.models import WatchedTicker, Trade
-from ktrade.provider_actions import trade_failed, trade_bought, trade_sold, trade_on_hold, trade_filled
+from ktrade.provider_actions import trade_failed, trade_bought, trade_sold, trade_on_hold, trade_filled, trade_status_changed
 from ktrade.providers.ib.account_summary_actions import AccountSummaryActions
 from ktrade.providers.ib.historical_data_actions import HistoricalDataActions
 from ktrade.providers.ib.ticker_price_actions import ticker_price_update
@@ -243,11 +245,26 @@ class IBApi(EWrapper, EClient):
     log.debug("[TWS] Received an error from TWS")
     open_order = self.open_orders.get(reqId)
     if open_order:
+      trade = open_order.get("trade")
+
       # We've receive an error so we're going to have to cancel the order. We'll
       # ignore warning codes, as they aren't a reason to terminate an order
 
       if 100 <= errorCode <= 449 or errorCode == 507 or 10000 <= errorCode <= 10284:
-        log.debug(["[TWS] Cancelling order. Error is not a warning"])
+        if errorCode == 399:
+          log.debug("[TWS] Received an order message error. Checking if warning")
+          matches = re.search(".*(Warning:.*)", errorString, re.IGNORECASE)
 
-        trade = open_order.get("trade")
-        trade_failed(trade, errorString)
+          if matches is None:
+            # Not a warning, just fail
+            log.debug("[TWS] Cancelling order. Error is not a warning")
+            trade_failed(trade, errorString)
+          
+          else:
+            log.debug("[TWS] Keeping order open. Error was a warning")
+            trade_status_changed(trade, TradeStatus(trade.order_status), matches[1])
+
+
+        else:
+          log.debug("[TWS] Cancelling order. Error is not a warning")
+          trade_failed(trade, errorString)
