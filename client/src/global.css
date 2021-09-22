@@ -2,3 +2,16 @@ html, body, #app, .ktrade {
   @apply h-full;
   @apply w-full;
 }
+
+/* Allow ag-grid cells for action menus to overflow */
+.ag-cell.actions {
+  overflow: visible;
+}
+
+.ag-row {
+  z-index: 0;
+}
+
+.ag-row.ag-row-focus {
+  z-index: 1;
+}

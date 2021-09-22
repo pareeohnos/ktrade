@@ -25,6 +25,12 @@ const rowActionClicked = (action: string, trade: Trade) => {
         title: "Pending",
         text: `Requested sell of 1/3 of ${trade.ticker}`
       }, 2000);
+    }).catch(err => {
+      if (err.response?.data?.error) {
+        alert(err.response?.data.error);
+      } else {
+        alert("Unexpected error occurred");
+      }
     });
   }
 };
@@ -40,6 +46,7 @@ const columnDefs = [
   { 
     field: "actions",
     headerName: "Actions",
+    cellClass: "actions",
     cellRenderer: "ActionsCellRenderer",
     cellRendererParams: {
       click(type: string, trade: Trade) {
