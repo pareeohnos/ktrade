@@ -57,8 +57,13 @@ def trim():
   if amount not in ["THIRD", "HALF"]:
     return jsonify({ "error": "Invalid option. You can trim by a THIRD or HALF" }), 422
 
-  trade = Trade.query.filter_by(id=trade_id).first()
-  inbound_queue.put(TrimMessage(trade=trade, amount=TrimSize[amount]))
-  schema = TradeSchema()
+  with ManagedSession() as session:
+    trade = Trade.find(session, trade_id)
 
-  return jsonify(schema.dump(trade))
+    if not trade.can_be_trimmed():
+      return jsonify({ "error": "Cannot trim an order that has not been filled" }), 422
+
+    inbound_queue.put(TrimMessage(trade=trade, amount=TrimSize[amount]))
+    schema = TradeSchema()
+
+    return jsonify(schema.dump(trade))

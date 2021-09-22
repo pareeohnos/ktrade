@@ -2,7 +2,7 @@ from application import db
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 from marshmallow import Schema, fields
-from db_manager import ManagedSession
+from ktrade.enums.trade_status import TradeStatus
 
 
 class BaseModel(db.Model):
@@ -92,6 +92,9 @@ class Trade(BaseModel):
   current_position_size = db.Column(db.Float)
 
   activities = relationship("TradeActivity", back_populates="trade")
+
+  def can_be_trimmed(self):
+    return TradeStatus(self.order_status) == TradeStatus.COMPLETE
 
 class TradeSchema(APISchema):
   id = fields.Int()
