@@ -28,6 +28,7 @@
     "vue": "^3.0.5",
     "vue-router": "4",
     "vue-socket.io": "https://github.com/MetinSeylan/Vue-Socket.io.git",
+    "vue3-click-away": "^1.2.1",
     "vuex": "^4.0.2"
   },
   "devDependencies": {
