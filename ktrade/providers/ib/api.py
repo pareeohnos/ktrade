@@ -224,7 +224,7 @@ class IBApi(EWrapper, EClient):
 
     log.debug("[TWS] Received exec update for order")
 
-    open_order = self.open_orders.get(reqId)
+    open_order = self.open_orders.get(execution.orderId)
     if open_order:
       trade = open_order.get("trade")
 

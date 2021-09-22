@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from flask import Blueprint, jsonify, send_from_directory, request
+from ktrade.enums.trim_size import TrimSize
 from ktrade.decorators import check_configured
 from ktrade.models import Trade, TradeSchema, WatchedTicker
 from ktrade.queue_messages.buy_message import BuyMessage
@@ -23,9 +24,11 @@ def create():
     trade = Trade(
       ticker=watched_ticker.ticker,
       filled=0,
+      price_at_order=watched_ticker.price,
       ordered_at=datetime.now(),
       order_status=TradeStatus.PENDING.value,
-      order_type="MKT")
+      order_type="MKT",
+      current_position_size=0)
 
     session.add(trade)
   
@@ -55,7 +58,7 @@ def trim():
     return jsonify({ "error": "Invalid option. You can trim by a THIRD or HALF" }), 422
 
   trade = Trade.query.filter_by(id=trade_id).first()
-  inbound_queue.put(TrimMessage(order_id=trade.order_id, amount=amount))
+  inbound_queue.put(TrimMessage(trade=trade, amount=TrimSize[amount]))
   schema = TradeSchema()
 
   return jsonify(schema.dump(trade))

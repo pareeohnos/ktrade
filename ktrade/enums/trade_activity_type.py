@@ -12,3 +12,4 @@ class TradeActivityType(Enum):
   COMPLETED = "completed"
   FAILED = "failed"
   STATUS_UPDATED = "status_updated"
+  ON_HOLD = "on_hold"

@@ -1,5 +1,6 @@
 <template>
 <div class="flex flex-row">
+  
   <app-button @click="clicked('TRIM_THIRD')">Trim 1/3</app-button>
   <app-button @click="clicked('TRIM_HALF')">Trim 1/2</app-button>
   <app-button class="ml-4" @click="clicked('SELL')">Sell</app-button>

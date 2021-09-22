@@ -72,6 +72,8 @@ def trade_bought(trade: Trade, quantity: int):
       trade_id=trade.id
     )
 
+    session.add(buy_activity)
+
     if trade.remaining == 0:
       # That's finished it, the order is now filled
       trade.order_status = TradeStatus.COMPLETE.value
@@ -119,16 +121,18 @@ def trade_filled(trade: Trade):
   with ManagedSession() as session:
     trade = Trade.find(session, trade.id)
     trade.order_status = TradeStatus.COMPLETE.value
-    trade.filled = filled
+    trade.filled = trade.amount_ordered
     trade.remaining = 0
 
     filled_activity = TradeActivity(
       when=datetime.now(),
-      activity_type=TradeActivityType.COMPLETE.value,
+      activity_type=TradeActivityType.COMPLETED.value,
       trade_id=trade.id
     )
 
     session.add(filled_activity)
+
+  ui.success(f"Order filled. Bought {trade.filled} {trade.ticker}")
 
 def trade_on_hold(trade: Trade):
   """
@@ -141,7 +145,7 @@ def trade_on_hold(trade: Trade):
 
     hold_activity = TradeActivity(
       when=datetime.now(),
-      activity_type=TradeActivityType.COMPLETE.value,
+      activity_type=TradeActivityType.ON_HOLD.value,
       trade_id=trade.id
     )
 

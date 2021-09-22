@@ -33,10 +33,10 @@ const columnDefs = [
   { field: "ticker", headerName: "Ticker" },
   { field: "orderStatus", headerName: "Status" },
   { field: "orderStatusDesc", headerName: "Desc" },
-  { field: "current_position_size", headerName: "Current position" },
+  { field: "currentPositionSize", headerName: "Current position" },
   { field: "filled", headerName: "Filled" },
-  { field: "price_at_order", headerName: "Price when ordered" },
-  { field: "ordered_at", headerName: "Ordered at" },
+  { field: "priceAtOrder", headerName: "Price when ordered" },
+  { field: "orderedAt", headerName: "Ordered at" },
   { 
     field: "actions",
     headerName: "Actions",
