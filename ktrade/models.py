@@ -91,7 +91,7 @@ class Trade(BaseModel):
   current_stop = db.Column(db.Float)
   current_position_size = db.Column(db.Float)
 
-  activities = relationship("TradeActivity", back_populates="trade")
+  activities = relationship("TradeActivity", back_populates="trade", cascade="all, delete")
 
   def can_be_trimmed(self):
     return TradeStatus(self.order_status) == TradeStatus.COMPLETE

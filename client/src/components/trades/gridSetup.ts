@@ -1,6 +1,6 @@
 import { ref } from "vue";
 import Trade from "@/data/models/trade";
-import { trim } from "./actions";
+import { trimPosition, deleteTrade } from "./actions";
 // @ts-ignore
 import { notify } from "notiwind"
 import { GridReadyEvent, GridApi, ColumnApi } from "@ag-grid-community/all-modules";
@@ -15,23 +15,25 @@ const gridApi = ref<GridApi>();
 const colApi = ref<ColumnApi>();
 const rowData = ref<{ [key: string]: Trade; }>({});
 const rowActionClicked = (action: string, trade: Trade) => {
-  if (action === "SELL") {
-    // Get rid of the lot!
-  } else {
-    let trimAmount = action === "TRIM_THIRD" ? "THIRD" : "HALF";
-    trim(trade, trimAmount).then(() => {
-      notify({
-        group: "notifications",
-        title: "Pending",
-        text: `Requested sell of 1/3 of ${trade.ticker}`
-      }, 2000);
-    }).catch(err => {
-      if (err.response?.data?.error) {
-        alert(err.response?.data.error);
-      } else {
-        alert("Unexpected error occurred");
-      }
-    });
+  switch(action) {
+    case "SELL":
+      // Get rid of the lot
+      break;
+
+    case "TRIM_THIRD":
+    case "TRIM_HALF":
+      let trimAmount = action === "TRIM_THIRD" ? "THIRD" : "HALF";
+      trimPosition(trade, trimAmount);
+      break;
+
+    case "DELETE":
+      deleteTrade(trade).then(() => {
+        // All done, remove from the grid now
+        gridApi.value?.applyTransaction({
+          remove: [trade]
+        })
+      });
+      break;
   }
 };
 

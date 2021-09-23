@@ -50,6 +50,10 @@ def initial_setup():
 @routes.route('/trim', methods=['POST'])
 @check_configured
 def trim():
+  """
+  Trims down a position by a specified amount
+  """
+
   params = request.get_json()
   trade_id = params['trade']
   amount = params['amount'].upper()
@@ -67,3 +71,17 @@ def trim():
     schema = TradeSchema()
 
     return jsonify(schema.dump(trade))
+
+@routes.route('/trades/<trade_id>', methods=['DELETE'])
+@check_configured
+def destroy(trade_id=None):
+  """
+  Removes a trade from the database. This will not make any attempt
+  to close positions, or move stop losses etc. It will just delete
+  it
+  """
+
+  with ManagedSession() as session:
+    # Delete everything
+    session.query(Trade).filter_by(id=trade_id).delete()
+    return jsonify({ "success": True })
