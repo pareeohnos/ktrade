@@ -106,6 +106,27 @@ class IBProvider(ProviderInterface):
       order_id=order.orderId,
       stop_order_id=stop_order.orderId)
 
+  def cancel_order(self, order_id: int):
+    """
+    Cancels the specified order ID
+    """
+    self.api.cancel_order(order_id)
+
+  def sell(self, trade: Trade, amount: float):
+    """
+    Places a SELL order with TWS for the specified amount.
+    """
+    contract = self.build_contract(trade.ticker)
+
+    sell_order = Order()
+    sell_order.action = "SELL"
+    sell_order.orderType = "MKT"
+    sell_order.orderId = self.api.next_request_id()
+    sell_order.totalQuantity = amount
+    sell_order.transmit = True
+
+    self.api.place_order(trade, contract, sell_order)
+
   def trim(self, trade: Trade, trim_size: float, stop_position: float, stop_size: float):
     """
     Prepares the modifications to the original orders to trim the position
@@ -127,14 +148,13 @@ class IBProvider(ProviderInterface):
     self.api.place_order(trade, contract, sell_order)
 
     # Move stop
-    log.debug(f"[IB] Moving stop loss to {trade.stop_position}, reducing to {stop_size} shares")
+    log.debug(f"[IB] Moving stop loss to {trade.price_at_order}, reducing to {stop_size} shares")
     stop_order = Order()
     stop_order.action = "SELL"
     stop_order.orderType = "STP"
     stop_order.auxPrice = trade.price_at_order
     stop_order.totalQuantity = stop_size
     stop_order.orderId = self.api.next_request_id()
-    stop_order.parentId = trade.order_id
     stop_order.transmit = True
 
     # Had problems modifying the existing order, so safer to just

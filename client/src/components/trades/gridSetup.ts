@@ -1,6 +1,6 @@
 import { ref } from "vue";
 import Trade from "@/data/models/trade";
-import { trimPosition, deleteTrade } from "./actions";
+import { trimPosition, deleteTrade, closePosition } from "./actions";
 // @ts-ignore
 import { notify } from "notiwind"
 import { GridReadyEvent, GridApi, ColumnApi } from "@ag-grid-community/all-modules";
@@ -25,6 +25,10 @@ const rowActionClicked = (action: string, trade: Trade) => {
       let trimAmount = action === "TRIM_THIRD" ? "THIRD" : "HALF";
       trimPosition(trade, trimAmount);
       break;
+
+    case "CLOSE":
+    case "CANCEL":
+      closePosition(trade);
 
     case "DELETE":
       deleteTrade(trade).then(() => {

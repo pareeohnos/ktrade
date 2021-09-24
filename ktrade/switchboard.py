@@ -95,6 +95,14 @@ class Switchboard:
           elif message.message_type == "TRIM":
             self.trim(message.trade, message.amount)
 
+          elif message.message_type == "SELL":
+            self.sell(message.trade, message.amount)
+
+          elif message.message_type == "CANCEL":
+            self.cancel(message.trade)
+
+
+
       except:
         print("Error in background thread")
         log.error("An unexpected error occurred in the background thread")
@@ -138,12 +146,40 @@ class Switchboard:
     with ManagedSession() as session:
       trade = Trade.find(session, trade.id)
       trade.amount_ordered = position_sizes.get("position_size")
+      trade.remaining = trade.amount_ordered
       trade.current_stop = position_sizes.get("stop_loss")
 
     self.tws.buy(
       trade=trade,
       position_size=position_sizes.get("position_size"),
       stop_loss=position_sizes.get("stop_loss"))
+
+  def cancel(self, trade: Trade):
+    """
+    Requests that the entire order be cancelled. This will simply cancel
+    an order, and will not attempt to sell any existing positions
+    """
+    log.debug(f"[Switchboard] Cancelling order for {trade.ticker}")
+    self.tws.cancel_order(trade.order_id)
+    self.tws.cancel_order(trade.stop_order_id)
+
+
+  def sell(self, trade: Trade, amount: float):
+    """
+    Requests that the provider sell the specified amount
+    """
+    log.debug(f"[Switchboard] Placing a SELL order for {amount} {trade.ticker}")
+
+    if trade.current_position_size == amount:
+      # This will sell everything, so we'll just close the
+      # entire position
+      log.debug(f"[Switchboard] Closing position, SELL request was for full position")
+      self.tws.close_position(trade)
+    
+    else:
+      self.tws.sell(
+        trade=trade,
+        amount=amount)
 
   def trim(self, trade: Trade, amount: TrimSize):
     """

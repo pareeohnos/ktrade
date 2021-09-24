@@ -101,7 +101,7 @@ def trade_sold(trade: Trade, quantity: int):
   """
   with ManagedSession() as session:
     trade = Trade.find(session, trade.id)
-    trade.current_position_size -= execution.shares
+    trade.current_position_size -= quantity
 
     sell_activity = TradeActivity(
       when=datetime.now(),
@@ -132,7 +132,7 @@ def trade_filled(trade: Trade):
 
     session.add(filled_activity)
 
-  ui.success(f"Order filled. Bought {trade.filled} {trade.ticker}")
+  ui.success(f"Order filled - {trade.filled} {trade.ticker}")
 
 def trade_on_hold(trade: Trade):
   """

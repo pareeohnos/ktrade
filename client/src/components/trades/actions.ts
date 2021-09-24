@@ -3,6 +3,35 @@ import axios from "axios";
 // @ts-ignore
 import { notify } from "notiwind";
 
+const errHandler = err => {
+  if (err.response?.data?.error) {
+    alert(err.response?.data.error);
+  } else {
+    alert("Unexpected error occurred");
+  }
+  throw err;
+};
+
+export const closePosition = (trade: Trade): Promise<void> => {
+  return axios.post(`/trades/${trade.id}/close`)
+    .then(() => {
+      notify({
+        group: "notifications",
+        title: "Placed SELL order",
+        text: "A SELL order was placed to close this position"
+      });
+    })
+    .catch(errHandler)
+};
+
+/**
+ * Deletes the specified trade from the system. Deleting a trade
+ * will not close a position, it will simply be removed from the
+ * database
+ * 
+ * @param trade
+ * @returns 
+ */
 export const deleteTrade = (trade: Trade): Promise<void> => {
   return axios.delete(`/trades/${trade.id}`)
     .then(() => {
@@ -12,14 +41,7 @@ export const deleteTrade = (trade: Trade): Promise<void> => {
         text: "The trade was successfully deleted"
       });
     })
-    .catch(err => {
-      if (err.response?.data?.error) {
-        alert(err.response?.data.error);
-      } else {
-        alert("Unexpected error occurred");
-      }
-      throw err;
-    })
+    .catch(errHandler)
 };
 
 /**
@@ -42,11 +64,5 @@ export const trimPosition = (trade: Trade, amount: String): Promise<void> => {
       title: "Pending",
       text: `Requested sell of 1/3 of ${trade.ticker}`
     }, 2000);
-  }).catch(err => {
-    if (err.response?.data?.error) {
-      alert(err.response?.data.error);
-    } else {
-      alert("Unexpected error occurred");
-    }
-  });;
+  }).catch(errHandler);
 };

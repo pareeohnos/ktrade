@@ -28,3 +28,9 @@ class TradeStatus(Enum):
 
   # The order has been filled, and there's nothing more to do
   COMPLETE = "complete"
+
+  # The order was cancelled before it could be filled
+  CANCELLED = "cancelled"
+
+  # The position has been closed
+  CLOSED = "closed"

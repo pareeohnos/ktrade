@@ -6,6 +6,7 @@ from ktrade.decorators import check_configured
 from ktrade.models import Trade, TradeSchema, WatchedTicker
 from ktrade.queue_messages.buy_message import BuyMessage
 from ktrade.queue_messages.trim_message import TrimMessage
+from ktrade.queue_messages.sell_message import SellMessage
 from ktrade.queues import inbound_queue
 from datetime import datetime
 from ktrade.enums.trade_status import TradeStatus
@@ -85,3 +86,24 @@ def destroy(trade_id=None):
     # Delete everything
     session.query(Trade).filter_by(id=trade_id).delete()
     return jsonify({ "success": True })
+
+@routes.route('/trades/<trade_id>/close', methods=['POST'])
+@check_configured
+def close(trade_id=None):
+  """
+  Closes an existing position if it is open. There must be at least 1
+  share left in the position, or have not been filled yet.
+  """
+
+  with ManagedSession() as session:
+    trade = Trade.find(session, trade_id)
+
+    if trade.current_position_size > 0:
+      # We need to sell what we've got left
+      inbound_queue.put(SellMessage(trade=trade, amount=trade.current_position_size))
+
+    elif TradeStatus(trade.order_status) == TradeStatus.PENDING:
+      # We'll just cancel the order
+      inbound_queue.put(CancelOrderMessage(trade=trade))
+
+  return jsonify({ "success": True })

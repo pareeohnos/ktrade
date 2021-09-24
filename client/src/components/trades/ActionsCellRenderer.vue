@@ -37,7 +37,12 @@ export default defineComponent({
       // The order has been filled so we can trim it down
       this.actions.push([
         { label: "Trim 1/3", action: "TRIM_THIRD" },
-        { label: "Trim 1/2", action: "TRIM_HALF" }
+        { label: "Trim 1/2", action: "TRIM_HALF" },
+        { label: "Close", action: "CLOSE" }
+      ]);
+    } else {
+      this.actions.push([
+        { label: "Cancel order", action: "CANCEL" }
       ]);
     }
 
