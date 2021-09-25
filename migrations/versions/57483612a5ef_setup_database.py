@@ -1,7 +1,7 @@
 """Setup database
 
 Revision ID: 57483612a5ef
-Revises: 
+Revises:
 Create Date: 2021-09-14 08:18:58.803394
 
 """
@@ -35,16 +35,16 @@ def upgrade():
     op.create_table('trades',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('ticker', sa.String(), nullable=False),
-    sa.Column('amount_ordered', sa.Float(), nullable=False),
-    sa.Column('ordered_at', sa.DateTime(), nullable=False),
+    sa.Column('amount_ordered', sa.Float(), nullable=True),
+    sa.Column('ordered_at', sa.DateTime(), nullable=True),
     sa.Column('order_status', sa.String(), nullable=False),
     sa.Column('filled', sa.Float(), nullable=False),
     sa.Column('remaining', sa.Float(), nullable=True),
-    sa.Column('price_at_order', sa.Float(), nullable=False),
-    sa.Column('order_type', sa.String(), nullable=False),
-    sa.Column('order_id', sa.Integer(), nullable=False),
-    sa.Column('stop_order_id', sa.Integer(), nullable=False),
-    sa.Column('current_stop', sa.Float(), nullable=False),
+    sa.Column('price_at_order', sa.Float(), nullable=True),
+    sa.Column('order_type', sa.String(), nullable=True),
+    sa.Column('order_id', sa.Integer(), nullable=True),
+    sa.Column('stop_order_id', sa.Integer(), nullable=True),
+    sa.Column('current_stop', sa.Float(), nullable=True),
     sa.Column('current_position_size', sa.Float(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )

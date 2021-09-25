@@ -6,6 +6,7 @@ from ktrade.models import WatchedTicker, WatchedTickerSchema
 from sqlalchemy.exc import IntegrityError
 from ktrade.queues import inbound_queue
 from ktrade.queue_messages.watch_message import WatchMessage, UnwatchMessage
+from ktrade.switchboard import Switchboard
 
 routes = Blueprint('watch_routes', __name__)
 
@@ -26,9 +27,9 @@ def start_watching():
     watch = WatchedTicker(ticker=ticker, price=0, high=0, low=0)
     db.session.add(watch)
     db.session.commit()
-    db.session.flush()
+    db.session.expunge(watch)
 
-    inbound_queue.put(WatchMessage(ticker=ticker))
+    inbound_queue.put(WatchMessage(watched_ticker=watch))
 
     schema = WatchedTickerSchema()
     return schema.dump(watch)
@@ -41,17 +42,17 @@ def start_watching():
 @routes.route('/unwatch', methods=['POST'])
 def unwatch():
   params = request.get_json()
-  ticker = params['ticker'].upper()
+  id = params['id']
 
-  watched_ticker = WatchedTicker.query.filter_by(ticker=ticker).first()
+  watched_ticker = WatchedTicker.find(db.session, id)
 
   if (watched_ticker is None):
     return jsonify({
-      'error': f'You are not watching {ticker}'
+      'error': 'You are not watching this ticker'
     }), 422
 
 
-  inbound_queue.put(UnwatchMessage(ticker=ticker))
+  inbound_queue.put(UnwatchMessage(watched_ticker=watched_ticker))
   schema = WatchedTickerSchema()
   db.session.delete(watched_ticker)
   db.session.commit()

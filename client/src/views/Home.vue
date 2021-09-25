@@ -51,8 +51,8 @@ export default defineComponent({
     AppPanel,
   },
   sockets: {
-    tickerUpdated({ ticker, field, value }: { ticker: string, field: string, value: number }) {
-      let itemToUpdate: WatchedTicker = this.rowData[ticker];
+    tickerUpdated({ watched_ticker_id, field, value }: { ticker: string, field: string, value: number }) {
+      let itemToUpdate: WatchedTicker = this.gridApi.getRowNode(watched_ticker_id).data;
       // @ts-ignore
       itemToUpdate[field] = value;
 
@@ -91,7 +91,7 @@ export default defineComponent({
       // memory, and the table
       await axios.get("/watches").then(({ data }) => {
         data.forEach((watchedTicker: WatchedTicker) => {
-          rowData.value[watchedTicker.ticker] = watchedTicker;
+          rowData.value[watchedTicker.id] = watchedTicker;
         })
 
         if (gridApi.value) {

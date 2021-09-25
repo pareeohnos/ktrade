@@ -7,7 +7,7 @@ import { GridReadyEvent, GridApi, ColumnApi } from "@ag-grid-community/all-modul
 
 const gridOptions =  {
   getRowNodeId: (data: WatchedTicker) => {
-    return data.ticker;
+    return data.id;
   }
 };
 
@@ -51,6 +51,7 @@ const gridReady = (params: GridReadyEvent) => {
   gridApi.value = params.api;
   colApi.value = params.columnApi;
   gridApi.value.setRowData(Object.values(rowData.value));
+  window.grid = gridApi;
 }
 
 export { 
