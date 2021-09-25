@@ -52,7 +52,7 @@ export default defineComponent({
   },
   sockets: {
     tickerUpdated({ watched_ticker_id, field, value }: { ticker: string, field: string, value: number }) {
-      let itemToUpdate: WatchedTicker = this.rowData[watched_ticker_id];
+      let itemToUpdate: WatchedTicker = this.gridApi.getRowNode(watched_ticker_id).data;
       // @ts-ignore
       itemToUpdate[field] = value;
 
