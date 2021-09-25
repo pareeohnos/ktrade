@@ -225,4 +225,4 @@ class Switchboard:
     the given ticker
     """
     log.debug(f"[Switchboard] Requesting a stop to real-time feed for {watched_ticker.ticker}")
-    self.tws.stop_realtime_feed(watched_ticker_id)
+    self.tws.stop_realtime_feed(watched_ticker)
