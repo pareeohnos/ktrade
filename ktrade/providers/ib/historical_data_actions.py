@@ -28,3 +28,9 @@ class HistoricalDataActions:
     ticker_updated(watched_ticker=watched_ticker, field="high", value=high)
     ticker_updated(watched_ticker=watched_ticker, field="low", value=low)
     ticker_updated(watched_ticker=watched_ticker, field="adr", value=adr)
+
+    return {
+      "high": high,
+      "low": low,
+      "adr": adr
+    }

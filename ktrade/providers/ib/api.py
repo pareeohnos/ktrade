@@ -6,10 +6,9 @@ from ibapi.wrapper import EWrapper, TickType, TickTypeEnum, BarData
 from ibapi.contract import Contract
 
 from ktrade.models import WatchedTicker, Trade
-from ktrade.provider_actions import trade_failed, trade_bought, trade_sold, trade_on_hold, trade_filled, trade_status_changed
+from ktrade.provider_actions import trade_failed, trade_bought, trade_sold, trade_on_hold, trade_filled, trade_status_changed, ticker_updated
 from ktrade.providers.ib.account_summary_actions import AccountSummaryActions
 from ktrade.providers.ib.historical_data_actions import HistoricalDataActions
-from ktrade.providers.ib.ticker_price_actions import ticker_price_update
 from ktrade.enums.trade_status import TradeStatus
 
 log = logging.getLogger(__name__)
@@ -34,6 +33,7 @@ class IBApi(EWrapper, EClient):
     self.request_to_ticker = {}
     self.historical_data_requests = {}
     self.open_orders = {}
+    self.price_cache = {}
 
   def next_request_id(self):
     self.req_id += 1
@@ -45,6 +45,7 @@ class IBApi(EWrapper, EClient):
     days for the specified watched ticker
     """
     req_id = self.next_request_id()
+    self.init_price_cache(watched_ticker)
     self.historical_data_requests[req_id] = {
       "ticker": contract.symbol,
       "bars": [],
@@ -60,6 +61,7 @@ class IBApi(EWrapper, EClient):
     """
     req_id = self.next_request_id()
 
+    self.init_price_cache(watched_ticker)
     self.request_to_ticker[req_id] = watched_ticker
     self.ticker_to_request[watched_ticker.id] = req_id
     self.reqMktData(req_id, contract, "233", False, False, [])
@@ -74,6 +76,7 @@ class IBApi(EWrapper, EClient):
       self.cancelMktData(sub_id)
       del self.ticker_to_request[watched_ticker.id]
       del self.request_to_ticker[sub_id]
+      del self.price_cache[watched_ticker.id]
 
   def place_order(self, trade: Trade, contract: Contract, order: Order):
     """
@@ -95,10 +98,21 @@ class IBApi(EWrapper, EClient):
     """
     self.cancelOrder(order_id)
 
+  def init_price_cache(self, watched_ticker: WatchedTicker):
+    if self.price_cache.get(watched_ticker.id):
+      return
+
+    self.price_cache[watched_ticker.id] = {
+      "high": 0,
+      "low": 0,
+      "price": 0
+    }
+
   #
   # The following methods are all overridden from either the EWrapper or
   # EClient classes
   #
+
   def nextValidId(self, orderId: int):
     """
     Called by TWS to inform the client of the next available request
@@ -139,10 +153,16 @@ class IBApi(EWrapper, EClient):
     super().historicalDataEnd(req_id, start, end)
     
     request = self.historical_data_requests[req_id]
+    watched_ticker = request.get("watched_ticker")
+
     action = HistoricalDataActions()
-    action.call(
-      watched_ticker=request.get("watched_ticker"),
+    prices = action.call(
+      watched_ticker=watched_ticker,
       bars=request.get("bars"))
+
+    cached_prices = self.price_cache[watched_ticker.id]
+    cached_prices["low"] = prices["low"]
+    cached_prices["high"] = prices["high"]
     
     del self.historical_data_requests[req_id]
 
@@ -161,7 +181,22 @@ class IBApi(EWrapper, EClient):
 
     log.debug("[TWS] Tick price update received")
     watched_ticker = self.request_to_ticker[tickerId]
-    ticker_price_update(watched_ticker, field, price)
+    
+    if field == TickTypeEnum.LAST or field == TickTypeEnum.CLOSE:
+      cached_prices = self.price_cache.get(watched_ticker.id)
+
+      ticker_updated(watched_ticker, "price", price)
+      cached_prices["price"] = price
+
+      # Update the low price if we've dropped below it
+      if price < cached_prices["low"]:
+        ticker_updated(watched_ticker, "low", price)
+        cached_prices["low"] = price
+
+      # Update the high price if we've gone above it
+      if price > cached_prices["high"]:
+        ticker_updated(watched_ticker, "high", price)
+        cached_prices["high"] = price
 
   def orderStatus(self, orderId: int, status: str, filled: float, remaining: float, avgFillPrice: float, permId: int, parentId: int, lastFillPrice: float, clientId: int, whyHeld: str, mktCapPrice: float):
     """
@@ -185,34 +220,6 @@ class IBApi(EWrapper, EClient):
 
       elif status == "Inactive":
         trade_on_hold(trade)
-    
-    # if trade:
-    #   if status == "Filled":
-    #     log.debug(f"Order {orderId} has been filled")
-    #     trade.order_status = status
-    #     trade.filled = filled
-    #     trade.remaining = remaining
-
-    #     # Add an activity entry
-    #     activity = TradeActivity(
-    #       when=datetime.now(),
-    #       activity_type="buy",
-    #       quantity=filled
-    #     )
-
-    #     trade.activities.append(activity)
-
-    #     db.session.add(activity)
-    #     db.session.commit()
-
-    #     ui.success(f"Order filled. Bought {filled} {trade.ticker}")
-
-    #   elif status == "Inactive":
-    #     trade.order_status = "Inactive"
-    #     activity = TradeActivity(
-    #       when=datetime.now(),
-    #       activity_type=""
-    #     )
 
   def execDetails(self, reqId, contract, execution):
     """
