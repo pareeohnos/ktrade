@@ -37,41 +37,41 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
-import axios from "axios";
-import AppButton from "@/components/AppButton.vue";
-import AppHeader from "@/components/AppHeader.vue";
-import AppInput from "@/components/AppInput.vue";
-import AppPanel from "@/components/AppPanel.vue";
+  import { defineComponent, ref } from "vue";
+  import axios from "axios";
+  import AppButton from "@/components/AppButton.vue";
+  import AppHeader from "@/components/AppHeader.vue";
+  import AppInput from "@/components/AppInput.vue";
+  import AppPanel from "@/components/AppPanel.vue";
 
-export default defineComponent({
-  components: {
-    AppButton,
-    AppHeader,
-    AppInput,
-    AppPanel,
-  },
-  setup() {
-    const config = ref({
-      maxRisk: 0.5,
-      maxSize: 33,
-      twsHost: "localhost",
-      twsPort: 4000,
-    });
-
-    return { config };
-  },
-  methods: {
-    submit() {
-      axios
-        .post("/configure", this.config)
-        .then(() => {
-          this.$router.replace("/");
-        })
-        .catch((error) => {
-          alert("Error");
-        });
+  export default defineComponent({
+    components: {
+      AppButton,
+      AppHeader,
+      AppInput,
+      AppPanel,
     },
-  },
-});
+    setup() {
+      const config = ref({
+        maxRisk: 0.5,
+        maxSize: 33,
+        twsHost: "localhost",
+        twsPort: 4000,
+      });
+
+      return { config };
+    },
+    methods: {
+      submit() {
+        axios
+          .post("/configure", this.config)
+          .then(() => {
+            this.$router.replace("/");
+          })
+          .catch((error) => {
+            alert("Error");
+          });
+      },
+    },
+  });
 </script>

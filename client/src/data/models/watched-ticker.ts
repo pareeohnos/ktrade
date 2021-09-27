@@ -1,6 +1,6 @@
 interface WatchedTicker {
-  id: number,
-  ticker: string
+  id: number;
+  ticker: string;
 }
 
 class WatchedTicker {}

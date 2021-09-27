@@ -18,13 +18,13 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/config",
     name: "Config",
-    component: Config
+    component: Config,
   },
   {
     path: "/initial_setup",
     name: "Setup",
     component: Setup,
-  }
+  },
   // {
   //   path: "/config",
   //   name: "Config",

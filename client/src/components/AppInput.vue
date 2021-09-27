@@ -12,36 +12,36 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+  import { defineComponent } from "vue";
 
-export default defineComponent({
-  name: "Input",
-  props: {
-    label: {
-      type: String,
-      required: true,
+  export default defineComponent({
+    name: "Input",
+    props: {
+      label: {
+        type: String,
+        required: true,
+      },
+      description: {
+        type: String,
+        required: false,
+        default: null,
+      },
+      modelValue: {
+        type: [String, Number],
+        required: false,
+        default: null,
+      },
     },
-    description: {
-      type: String,
-      required: false,
-      default: null,
+    setup(_props, { emit }) {
+      const onInput = (e: Event) => {
+        const target = <HTMLInputElement>e.target;
+        const val = target.value;
+
+        emit("update:modelValue", val);
+      };
+      return {
+        onInput,
+      };
     },
-    modelValue: {
-      type: [String, Number],
-      required: false,
-      default: null,
-    },
-  },
-  setup(_props, { emit }) {
-    const onInput = (e: Event) => {
-      const target = (<HTMLInputElement>e.target);
-      const val = target.value;
-      
-      emit('update:modelValue', val);
-    };
-    return {
-      onInput
-    }
-  }
-});
+  });
 </script>

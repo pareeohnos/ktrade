@@ -2,20 +2,24 @@ import { ref } from "vue";
 import Trade from "@/data/models/trade";
 import { trimPosition, deleteTrade, closePosition } from "./actions";
 // @ts-ignore
-import { notify } from "notiwind"
-import { GridReadyEvent, GridApi, ColumnApi } from "@ag-grid-community/all-modules";
+import { notify } from "notiwind";
+import {
+  GridReadyEvent,
+  GridApi,
+  ColumnApi,
+} from "@ag-grid-community/all-modules";
 
 const gridOptions = {
   getRowNodeId: (data: Trade) => {
     return data.orderId;
-  }
+  },
 };
 
 const gridApi = ref<GridApi>();
 const colApi = ref<ColumnApi>();
-const rowData = ref<{ [key: string]: Trade; }>({});
+const rowData = ref<{ [key: string]: Trade }>({});
 const rowActionClicked = (action: string, trade: Trade) => {
-  switch(action) {
+  switch (action) {
     case "SELL":
       // Get rid of the lot
       break;
@@ -34,8 +38,8 @@ const rowActionClicked = (action: string, trade: Trade) => {
       deleteTrade(trade).then(() => {
         // All done, remove from the grid now
         gridApi.value?.applyTransaction({
-          remove: [trade]
-        })
+          remove: [trade],
+        });
       });
       break;
   }
@@ -49,7 +53,7 @@ const columnDefs = [
   { field: "filled", headerName: "Filled" },
   { field: "priceAtOrder", headerName: "Price when ordered" },
   { field: "orderedAt", headerName: "Ordered at" },
-  { 
+  {
     field: "actions",
     headerName: "Actions",
     cellClass: "actions",
@@ -57,8 +61,8 @@ const columnDefs = [
     cellRendererParams: {
       click(type: string, trade: Trade) {
         rowActionClicked(type, trade);
-      }
-    }
+      },
+    },
   },
 ];
 
@@ -66,9 +70,9 @@ const gridReady = (params: GridReadyEvent) => {
   gridApi.value = params.api;
   colApi.value = params.columnApi;
   gridApi.value.setRowData(Object.values(rowData.value));
-}
+};
 
-export { 
+export {
   gridOptions,
   colApi,
   columnDefs,

@@ -1,4 +1,7 @@
-html, body, #app, .ktrade {
+html,
+body,
+#app,
+.ktrade {
   @apply h-full;
   @apply w-full;
 }

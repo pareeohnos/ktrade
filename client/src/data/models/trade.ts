@@ -1,11 +1,9 @@
 interface Trade {
-  id: number,
-  ticker: String,
-  orderId: number
+  id: number;
+  ticker: String;
+  orderId: number;
 }
 
-class Trade {
-
-}
+class Trade {}
 
 export default Trade;

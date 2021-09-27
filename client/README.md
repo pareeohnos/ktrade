@@ -1,6 +1,9 @@
 # Vue 3 + Typescript + Vite
+
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+
 [![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 This template should help get you started developing with Vue 3 and Typescript in Vite.

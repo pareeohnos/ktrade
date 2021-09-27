@@ -10,37 +10,37 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+  import { defineComponent } from "vue";
 
-export default defineComponent({
-  name: "Navigation",
-});
+  export default defineComponent({
+    name: "Navigation",
+  });
 </script>
 
 <style lang="postcss" scoped>
-.menu-item {
-  @apply relative;
-  @apply block;
-  @apply no-underline;
-  @apply pt-4;
-  @apply pb-1;
-  @apply px-4;
-  z-index: 1;
+  .menu-item {
+    @apply relative;
+    @apply block;
+    @apply no-underline;
+    @apply pt-4;
+    @apply pb-1;
+    @apply px-4;
+    z-index: 1;
 
-  &.router-link-active {
-    @apply text-gray-800;
+    &.router-link-active {
+      @apply text-gray-800;
 
-    &:after {
-      content: "";
-      @apply absolute;
-      @apply left-0;
-      @apply right-0;
-      @apply bottom-0;
-      @apply top-2;
-      @apply rounded-t;
-      z-index: -1;
-      @apply bg-blue-400;
+      &:after {
+        content: "";
+        @apply absolute;
+        @apply left-0;
+        @apply right-0;
+        @apply bottom-0;
+        @apply top-2;
+        @apply rounded-t;
+        z-index: -1;
+        @apply bg-blue-400;
+      }
     }
   }
-}
 </style>
