@@ -33,6 +33,7 @@ const rowActionClicked = (action: string, trade: Trade) => {
     case "CLOSE":
     case "CANCEL":
       closePosition(trade);
+      break;
 
     case "DELETE":
       deleteTrade(trade).then(() => {
