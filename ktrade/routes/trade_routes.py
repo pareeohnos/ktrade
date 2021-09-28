@@ -44,8 +44,6 @@ def initial_setup():
   trades = Trade.query.all()
   schema = TradeSchema()
 
-  print(f"TS {schema}")
-
   return jsonify(schema.dump(trades, many=True))
 
 @routes.route('/trim', methods=['POST'])

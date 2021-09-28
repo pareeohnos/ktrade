@@ -33,6 +33,7 @@ class IBApi(EWrapper, EClient):
     self.request_to_ticker = {}
     self.historical_data_requests = {}
     self.open_orders = {}
+    self.pending_cancellations = set()
     self.price_cache = {}
 
   def next_request_id(self):
@@ -96,6 +97,7 @@ class IBApi(EWrapper, EClient):
     """
     Submit a request for TWS to cancel an order
     """
+    self.pending_cancellations.add(order_id)
     self.cancelOrder(order_id)
 
   def init_price_cache(self, watched_ticker: WatchedTicker):
@@ -212,6 +214,12 @@ class IBApi(EWrapper, EClient):
     if open_order:
       log.debug("[TWS] Open order found")
       trade = open_order.get("trade")
+      order = open_order.get("order")
+
+      if order.orderType == "STP":
+        # We won't do anything here just yet. This is just the stop loss
+        # for the main trade record so nothing to update really
+        return
 
       # We only really care about the `filled` and `inactive` at this point
       if status == "Filled":
@@ -254,6 +262,11 @@ class IBApi(EWrapper, EClient):
     if open_order:
       trade = open_order.get("trade")
 
+      # 202 is `cancelled` but we requested it, so it's not actually an error
+      if errorCode == 202 and reqId in self.pending_cancellations:
+        self.pending_cancellations.remove(reqId)
+        return
+
       # We've receive an error so we're going to have to cancel the order. We'll
       # ignore warning codes, as they aren't a reason to terminate an order
 
@@ -270,7 +283,6 @@ class IBApi(EWrapper, EClient):
           else:
             log.debug("[TWS] Keeping order open. Error was a warning")
             trade_status_changed(trade, TradeStatus(trade.order_status), matches[1])
-
 
         else:
           log.debug("[TWS] Cancelling order. Error is not a warning")
