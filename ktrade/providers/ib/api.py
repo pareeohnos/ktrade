@@ -136,6 +136,14 @@ class IBApi(EWrapper, EClient):
     action = AccountSummaryActions()
     action.call(account=account, value=value, tag=tag)
 
+  def connectionClosed(self):
+    """
+    Called when the connection to TWS is closed for one reason or another.
+    Unless the app is being terminated, this is likely an error. As such,
+    we will raise an exception and let the managing code above handle the
+    issue
+    """
+    raise ConnectionError("TWS connectioned closed")
 
   def historicalData(self,  req_id: int, bar: BarData):
     """

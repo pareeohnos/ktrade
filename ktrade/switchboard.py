@@ -23,7 +23,7 @@ class Switchboard:
   """
 
   def __init__(self):
-    self.tws = IBProvider()
+    self.tws = IBProvider(inbound_queue)
     self.connected = False
 
   def start(self, app):
@@ -49,21 +49,26 @@ class Switchboard:
       log.debug("[Switchboard] Checking configuration")
       
       while not self.connected:
-        if (is_configured()):
-          log.info("[Switchboard] App is configured. Connecting to TWS")
-          self.tws.connect(app)
+        try:
+          if (is_configured()):
+            log.info("[Switchboard] App is configured. Connecting to TWS")
+            self.tws.connect(app)
 
-          while not self.tws.is_connected():
-            log.debug("[Switchboard] Waiting for provider to connect")
-            sleep(1)
+            while not self.tws.is_connected():
+              log.debug("[Switchboard] Waiting for provider to connect")
+              sleep(1)
 
-          self.connected = True
+            self.connected = True
+            self.start_listening()
 
-        else:
-          log.info("[Switchboard] App not configured. Sleeping for 5 seconds")
+          else:
+            log.info("[Switchboard] App not configured. Sleeping for 5 seconds")
+            sleep(5)
+
+        except ConnectionError:
+          log.error("[Switchboard] Received a discconect from provider. Restarting")
+          self.connected = False
           sleep(5)
-
-      self.start_listening()
 
   def start_listening(self):
     """
@@ -101,8 +106,19 @@ class Switchboard:
           elif message.message_type == "CANCEL":
             self.cancel(message.trade)
 
+          # Received an error message from a provider
+          elif message.message_type == "PROVIDER_ERROR":
+            log.error("[Switchboard] Received error from provider")
+            self.connected = False
+            raise message.exception
 
 
+
+      except ConnectionError as e:
+        # Looks like the connection terminated so we can't just continue. We'll
+        # need to restart the whole process
+        self.connected = False
+        raise e
       except:
         print("Error in background thread")
         log.error("An unexpected error occurred in the background thread")

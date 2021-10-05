@@ -6,7 +6,7 @@ from ktrade.providers.provider_interface import ProviderInterface
 from ktrade.config import configuration_for
 from ktrade.providers.ib.api import IBApi
 from ktrade.models import WatchedTicker, Trade
-from ktrade.queue_messages.watch_message import WatchMessage
+from ktrade.queue_messages.provider_error_message import ProviderErrorMessage
 from ktrade.provider_actions import update_order_ids
 from threading import Thread
 from time import sleep
@@ -14,7 +14,8 @@ from time import sleep
 log = logging.getLogger(__name__)
 
 class IBProvider(ProviderInterface):
-  def __init__(self):
+  def __init__(self, switchboard_queue):
+    self.switchboard_queue = switchboard_queue
     self.api = IBApi(self)
     self.connected = False
 
@@ -201,8 +202,15 @@ class IBProvider(ProviderInterface):
     Starts the IB Api client
     """
 
-    with app.app_context():
-      self.api.run()
+    try:
+      with app.app_context():
+        self.api.run()
+    
+    except ConnectionError as e:
+      self.connected = False
+      log.error("[IB] Connection to TWS failed. Exiting")
+      self.switchboard_queue.put(ProviderErrorMessage(exception=e))
+      
 
   def build_contract(self, ticker: str):
     """
