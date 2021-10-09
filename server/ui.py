@@ -1,5 +1,5 @@
 from application import socketio
-from ktrade.models import WatchedTicker
+from server.models import WatchedTicker
 
 def ticker_price_update(watched_ticker: WatchedTicker, field: str, value: float):
   socketio.emit("tickerUpdated", { "watched_ticker_id": watched_ticker.id, "field": field, "value": value })

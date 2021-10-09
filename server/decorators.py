@@ -2,7 +2,7 @@
 
 from functools import wraps
 from flask import redirect, url_for
-from ktrade.config import is_configured
+from server.config import is_configured
 
 def check_configured(f):
   @wraps(f)

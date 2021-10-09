@@ -1,5 +1,5 @@
 import logging
-from ktrade.models import Account
+from server.models import Account
 from db_manager import ManagedSession
 
 log = logging.getLogger(__name__)

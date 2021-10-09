@@ -2,11 +2,11 @@
 
 from flask import Blueprint, jsonify, send_from_directory, request
 from application import db
-from ktrade.models import WatchedTicker, WatchedTickerSchema
+from server.models import WatchedTicker, WatchedTickerSchema
 from sqlalchemy.exc import IntegrityError
-from ktrade.queues import inbound_queue
-from ktrade.queue_messages.watch_message import WatchMessage, UnwatchMessage
-from ktrade.switchboard import Switchboard
+from server.queues import inbound_queue
+from server.queue_messages.watch_message import WatchMessage, UnwatchMessage
+from server.switchboard import Switchboard
 
 routes = Blueprint('watch_routes', __name__)
 

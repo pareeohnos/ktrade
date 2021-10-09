@@ -3,13 +3,13 @@ import math
 import traceback
 
 from db_manager import ManagedSession
-from ktrade.config import is_configured, configuration_for
-from ktrade.models import WatchedTicker, Trade
-from ktrade.enums.trim_size import TrimSize
-from ktrade.providers.ib_provider import IBProvider
-from ktrade.provider_actions import trade_failed
-from ktrade.queues import inbound_queue
-from ktrade.calculations import calculate_position_sizes
+from server.config import is_configured, configuration_for
+from server.models import WatchedTicker, Trade
+from server.enums.trim_size import TrimSize
+from server.providers.ib_provider import IBProvider
+from server.provider_actions import trade_failed
+from server.queues import inbound_queue
+from server.calculations import calculate_position_sizes
 from threading import Thread
 from time import sleep
 

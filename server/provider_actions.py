@@ -1,9 +1,9 @@
 from datetime import datetime
 from db_manager import ManagedSession
-from ktrade.enums.trade_status import TradeStatus
-from ktrade.enums.trade_activity_type import TradeActivityType
-from ktrade.models import Trade, TradeActivity, WatchedTicker
-import ktrade.ui as ui
+from server.enums.trade_status import TradeStatus
+from server.enums.trade_activity_type import TradeActivityType
+from server.models import Trade, TradeActivity, WatchedTicker
+import server.ui as ui
 
 def update_order_ids(trade: Trade, order_id = None, stop_order_id = None):
   """

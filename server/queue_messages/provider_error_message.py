@@ -1,4 +1,4 @@
-from ktrade.queue_messages.queue_message import QueueMessage
+from server.queue_messages.queue_message import QueueMessage
 
 class ProviderErrorMessage(QueueMessage):
   def __init__(self, exception: Exception):

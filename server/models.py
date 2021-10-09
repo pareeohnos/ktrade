@@ -2,7 +2,7 @@ from application import db
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 from marshmallow import Schema, fields
-from ktrade.enums.trade_status import TradeStatus
+from server.enums.trade_status import TradeStatus
 
 
 class BaseModel(db.Model):

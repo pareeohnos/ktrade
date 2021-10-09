@@ -2,12 +2,12 @@ import logging
 from application import db
 from ibapi.client import Order
 from ibapi.contract import Contract
-from ktrade.providers.provider_interface import ProviderInterface
-from ktrade.config import configuration_for
-from ktrade.providers.ib.api import IBApi
-from ktrade.models import WatchedTicker, Trade
-from ktrade.queue_messages.provider_error_message import ProviderErrorMessage
-from ktrade.provider_actions import update_order_ids
+from server.providers.provider_interface import ProviderInterface
+from server.config import configuration_for
+from server.providers.ib.api import IBApi
+from server.models import WatchedTicker, Trade
+from server.queue_messages.provider_error_message import ProviderErrorMessage
+from server.provider_actions import update_order_ids
 from threading import Thread
 from time import sleep
 

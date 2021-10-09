@@ -5,11 +5,11 @@ from ibapi.client import EClient, TickAttribLast, TickAttrib, Order, ExecutionFi
 from ibapi.wrapper import EWrapper, TickType, TickTypeEnum, BarData
 from ibapi.contract import Contract
 
-from ktrade.models import WatchedTicker, Trade
-from ktrade.provider_actions import trade_failed, trade_bought, trade_sold, trade_on_hold, trade_filled, trade_status_changed, ticker_updated
-from ktrade.providers.ib.account_summary_actions import AccountSummaryActions
-from ktrade.providers.ib.historical_data_actions import HistoricalDataActions
-from ktrade.enums.trade_status import TradeStatus
+from server.models import WatchedTicker, Trade
+from server.provider_actions import trade_failed, trade_bought, trade_sold, trade_on_hold, trade_filled, trade_status_changed, ticker_updated
+from server.providers.ib.account_summary_actions import AccountSummaryActions
+from server.providers.ib.historical_data_actions import HistoricalDataActions
+from server.enums.trade_status import TradeStatus
 
 log = logging.getLogger(__name__)
 

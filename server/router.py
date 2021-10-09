@@ -5,15 +5,15 @@ from flask import Blueprint, jsonify, send_from_directory
 from application import db
 from settings import ROOT_PATH
 
-from ktrade.models import Configuration, WatchedTicker
-from ktrade.decorators import check_configured
+from server.models import Configuration, WatchedTicker
+from server.decorators import check_configured
 
 CLIENT_PATH = f'{ROOT_PATH}/client/dist'
 
-from ktrade.routes.config_routes import routes as config_routes
-from ktrade.routes.trade_routes import routes as trade_routes
-from ktrade.routes.watch_routes import routes as watch_routes
-from ktrade.routes.base_routes import routes as base_routes
+from server.routes.config_routes import routes as config_routes
+from server.routes.trade_routes import routes as trade_routes
+from server.routes.watch_routes import routes as watch_routes
+from server.routes.base_routes import routes as base_routes
 
 routes = [
     config_routes,

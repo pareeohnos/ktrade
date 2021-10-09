@@ -1,8 +1,8 @@
 import logging
-from ktrade.models import WatchedTicker
+from server.models import WatchedTicker
 from application import db
-from ktrade.calculations import calculate_adr
-from ktrade.provider_actions import ticker_updated
+from server.calculations import calculate_adr
+from server.provider_actions import ticker_updated
 
 log = logging.getLogger(__name__)
 

@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 
 from flask import Blueprint, jsonify, send_from_directory, request
-from ktrade.enums.trim_size import TrimSize
-from ktrade.decorators import check_configured
-from ktrade.models import Trade, TradeSchema, WatchedTicker
-from ktrade.queue_messages.buy_message import BuyMessage
-from ktrade.queue_messages.trim_message import TrimMessage
-from ktrade.queue_messages.sell_message import SellMessage
-from ktrade.queues import inbound_queue
+from server.enums.trim_size import TrimSize
+from server.decorators import check_configured
+from server.models import Trade, TradeSchema, WatchedTicker
+from server.queue_messages.buy_message import BuyMessage
+from server.queue_messages.trim_message import TrimMessage
+from server.queue_messages.sell_message import SellMessage
+from server.queues import inbound_queue
 from datetime import datetime
-from ktrade.enums.trade_status import TradeStatus
+from server.enums.trade_status import TradeStatus
 from db_manager import ManagedSession
 
 routes = Blueprint('trade_routes', __name__)

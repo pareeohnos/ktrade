@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from flask import Blueprint, jsonify, send_from_directory, request
-from ktrade.decorators import check_configured
+from server.decorators import check_configured
 from settings import ROOT_PATH
 from application import db
-from ktrade.models import Configuration
+from server.models import Configuration
 
 CLIENT_PATH = f'{ROOT_PATH}/client/dist'
 

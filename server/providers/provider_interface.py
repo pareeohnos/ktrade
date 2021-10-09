@@ -1,4 +1,4 @@
-from ktrade.models import WatchedTicker, Trade
+from server.models import WatchedTicker, Trade
 
 class ProviderInterface:
   """

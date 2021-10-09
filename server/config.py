@@ -1,4 +1,4 @@
-from ktrade.models import Configuration
+from server.models import Configuration
 from sqlalchemy_utils import database_exists
 
 def is_configured():

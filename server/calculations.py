@@ -1,8 +1,8 @@
 import math
 import logging
 from functools import reduce
-from ktrade.models import WatchedTicker, Account
-from ktrade.config import configuration_for
+from server.models import WatchedTicker, Account
+from server.config import configuration_for
 
 log = logging.getLogger(__name__)
 
