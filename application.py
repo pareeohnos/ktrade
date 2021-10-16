@@ -22,16 +22,17 @@ def create_app(**config_overrides):
     """
     app = Flask(__name__)
 
-    app.config.from_pyfile('settings.py')
+    settings_path = os.path.dirname(os.path.abspath(__file__))
+    app.config.from_pyfile(os.path.join(settings_path, 'settings.py'))
     app.config.update(config_overrides)
     CORS(app, resources={r'/*': {'origins': '*'}})
 
     ## Setup websockets
-    import ktrade.routes.websocket_routes
+    import server.routes.websocket_routes
     socketio.init_app(app)
 
     # Init the app and the db migration lib
-    db.init_app(app, )
+    db.init_app(app)
     migrate.init_app(app, db, render_as_batch=True)
 
     # Setup our actual db that is used throughout the app
@@ -39,7 +40,7 @@ def create_app(**config_overrides):
     init_session_factory()
 
     # Setup our API routes
-    from ktrade.router import routes
+    from server.router import routes
 
     for route in routes:
         app.register_blueprint(route)

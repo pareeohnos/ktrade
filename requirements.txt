@@ -1,4 +1,6 @@
 Flask==2.0.1
+eventlet==0.30.2
+gunicorn==20.1.0
 flask-cors==3.0.10
 sqlalchemy==1.4
 Flask-SQLAlchemy==2.5
@@ -7,3 +9,4 @@ sqlalchemy-utils==0.37.8
 ibapi==9.81.1.post1
 marshmallow==3.13
 flask-socketio==5.1.1
+pytz==2021.3

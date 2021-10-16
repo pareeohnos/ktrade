@@ -1,14 +1,14 @@
 # Set the path
 import os, sys
 import logging
-from threading import Thread
-from application import create_app, db
-from ktrade.switchboard import Switchboard
+from application import create_app, db, socketio
+from server.switchboard import Switchboard
+from server.scheduler import Scheduler
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 app = create_app()
 
-if os.environ["FLASK_RUN_FROM_CLI"]:
+if os.environ.get("FLASK_RUN_FROM_CLI"):
     print("Start by flask command")
     # We're being run directly from `flask` command. Check that we're
     # running the `run` command before starting background threads.
@@ -17,13 +17,20 @@ if os.environ["FLASK_RUN_FROM_CLI"]:
 
     if command == "run":
         # This is the `run` command so fire up the background threads
+
+        # Start the scheduler
+        scheduler = Scheduler()
+        scheduler.start(app)
+
+        # Start the switchboard
         switchboard = Switchboard()
         switchboard.start(app)
-        # from ktrade.ib_api import start_listening
-        # ib = Thread(daemon=True, target=start_listening, args=[app])
-        # ib.start()
 
 @app.before_first_request
 def initialise_db():
     logging.debug('Creating database')
     db.create_all()
+
+
+if __name__ == "__main__":
+    socketio.run(app)

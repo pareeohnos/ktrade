@@ -66,7 +66,7 @@ class Switchboard:
             sleep(5)
 
         except ConnectionError:
-          log.error("[Switchboard] Received a discconect from provider. Restarting")
+          log.error("[Switchboard] Received a disconect from provider. Restarting")
           self.connected = False
           sleep(5)
 

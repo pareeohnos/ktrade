@@ -16,6 +16,10 @@ class BaseModel(db.Model):
   def find_by(cls, session, **kwargs):
     return session.query(cls).filter_by(**kwargs).first()
 
+  @classmethod
+  def all(cls, session):
+    return session.query(cls).all()
+
 def camelcase(s):
   parts = iter(s.split("_"))
   return next(parts) + "".join(i.title() for i in parts)
