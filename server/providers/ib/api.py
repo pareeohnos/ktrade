@@ -10,6 +10,7 @@ from server.provider_actions import trade_failed, trade_bought, trade_sold, trad
 from server.providers.ib.account_summary_actions import AccountSummaryActions
 from server.providers.ib.historical_data_actions import HistoricalDataActions
 from server.enums.trade_status import TradeStatus
+from server.price_cache import PriceCache
 
 log = logging.getLogger(__name__)
 
@@ -34,7 +35,7 @@ class IBApi(EWrapper, EClient):
     self.historical_data_requests = {}
     self.open_orders = {}
     self.pending_cancellations = set()
-    self.price_cache = {}
+    self.price_cache = PriceCache()
 
   def next_request_id(self):
     self.req_id += 1
@@ -46,7 +47,7 @@ class IBApi(EWrapper, EClient):
     days for the specified watched ticker
     """
     req_id = self.next_request_id()
-    self.init_price_cache(watched_ticker)
+    self.price_cache.init_cache_for_ticker(watched_ticker.id)
     self.historical_data_requests[req_id] = {
       "ticker": contract.symbol,
       "bars": [],
@@ -62,7 +63,7 @@ class IBApi(EWrapper, EClient):
     """
     req_id = self.next_request_id()
 
-    self.init_price_cache(watched_ticker)
+    self.price_cache.init_cache_for_ticker(watched_ticker.id)
     self.request_to_ticker[req_id] = watched_ticker
     self.ticker_to_request[watched_ticker.id] = req_id
     self.reqMktData(req_id, contract, "233", False, False, [])
@@ -77,7 +78,7 @@ class IBApi(EWrapper, EClient):
       self.cancelMktData(sub_id)
       del self.ticker_to_request[watched_ticker.id]
       del self.request_to_ticker[sub_id]
-      del self.price_cache[watched_ticker.id]
+      self.price_cache.delete_watched_ticker(watched_ticker.id)
 
   def place_order(self, trade: Trade, contract: Contract, order: Order):
     """
@@ -99,16 +100,6 @@ class IBApi(EWrapper, EClient):
     """
     self.pending_cancellations.add(order_id)
     self.cancelOrder(order_id)
-
-  def init_price_cache(self, watched_ticker: WatchedTicker):
-    if self.price_cache.get(watched_ticker.id):
-      return
-
-    self.price_cache[watched_ticker.id] = {
-      "high": 0,
-      "low": 0,
-      "price": 0
-    }
 
   #
   # The following methods are all overridden from either the EWrapper or
@@ -170,9 +161,8 @@ class IBApi(EWrapper, EClient):
       watched_ticker=watched_ticker,
       bars=request.get("bars"))
 
-    cached_prices = self.price_cache[watched_ticker.id]
-    cached_prices["low"] = prices["low"]
-    cached_prices["high"] = prices["high"]
+    self.price_cache.update_cached_price(watched_ticker.id, "low", prices["low"])
+    self.price_cache.update_cached_price(watched_ticker.id, "high", prices["high"])
     
     del self.historical_data_requests[req_id]
 
@@ -193,20 +183,20 @@ class IBApi(EWrapper, EClient):
     watched_ticker = self.request_to_ticker[tickerId]
     
     if field == TickTypeEnum.LAST or field == TickTypeEnum.CLOSE:
-      cached_prices = self.price_cache.get(watched_ticker.id)
+      cached_prices = self.price_cache.cached_prices_for_ticker(watched_ticker.id)
 
       ticker_updated(watched_ticker, "price", price)
-      cached_prices["price"] = price
+      self.price_cache.update_cached_price(watched_ticker.id, "price", price)
 
       # Update the low price if we've dropped below it
-      if price < cached_prices["low"]:
+      if cached_prices["low"] == None or price < cached_prices["low"]:
         ticker_updated(watched_ticker, "low", price)
-        cached_prices["low"] = price
+        self.price_cache.update_cached_price(watched_ticker.id, "low", price)
 
       # Update the high price if we've gone above it
-      if price > cached_prices["high"]:
+      if cached_prices["high"] == None or price > cached_prices["high"]:
         ticker_updated(watched_ticker, "high", price)
-        cached_prices["high"] = price
+        self.price_cache.update_cached_price(watched_ticker.id, "high", price)
 
   def orderStatus(self, orderId: int, status: str, filled: float, remaining: float, avgFillPrice: float, permId: int, parentId: int, lastFillPrice: float, clientId: int, whyHeld: str, mktCapPrice: float):
     """

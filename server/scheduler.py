@@ -9,6 +9,7 @@ from threading import Thread
 
 from db_manager import ManagedSession
 from server.models import WatchedTicker
+from server.price_cache import PriceCache
 
 log = logging.getLogger(__name__)
 scheduler = None
@@ -68,7 +69,13 @@ class Scheduler:
 
   def _reset_lod_values(self):
     log.debug("[Scheduler] Resetting LOD values")
+    price_cache = PriceCache()
+
+    # Make sure the price cache values are reset
+    price_cache.reset_cached_values()
+
     with ManagedSession() as session:
       watched_tickers = WatchedTicker.all(session)
       for watched_ticker in watched_tickers:
         watched_ticker.low = None
+        watched_ticker.high = None
