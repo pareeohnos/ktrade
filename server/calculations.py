@@ -15,7 +15,7 @@ def calculate_adr(bars):
     bars,
     0)
 
-  return 100 * ((total / len(bars)) - 1)
+  return round(100 * ((total / len(bars)) - 1), 1)
 
 def calculate_position_sizes(watched_ticker: WatchedTicker):
   """
