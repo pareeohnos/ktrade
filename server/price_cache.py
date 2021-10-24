@@ -40,7 +40,7 @@ class PriceCache(metaclass=SingletonMeta):
     del self.price_cache[watched_ticker_id]
 
   def reset_cached_values(self):
-    for prices in self.price_cache:
+    for prices in self.price_cache.values():
       prices["low"] = None
       prices["high"] = None
       prices["price"] = None
