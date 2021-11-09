@@ -49,6 +49,7 @@ def trade_failed(trade: Trade, reason: str):
     )
 
     session.add(activity)
+    ui.trade_status_changed(trade, TradeStatus.FAILED.value, reason)
 
     # Lastly, notify the UI
     ui.error(reason)
@@ -73,6 +74,7 @@ def trade_bought(trade: Trade, quantity: int):
     )
 
     session.add(buy_activity)
+    ui.trade_filled(trade, quantity)
 
     if trade.remaining == 0:
       # That's finished it, the order is now filled
@@ -110,6 +112,7 @@ def trade_sold(trade: Trade, quantity: int):
       trade_id=trade.id
     )
 
+    ui.trade_sold(trade, quantity)
     session.add(sell_activity)
 
 def trade_filled(trade: Trade):
@@ -132,6 +135,7 @@ def trade_filled(trade: Trade):
 
     session.add(filled_activity)
 
+  ui.trade_filled(trade, quantity)
   ui.success(f"Order filled - {trade.filled} {trade.ticker}")
 
 def trade_on_hold(trade: Trade):
@@ -142,6 +146,7 @@ def trade_on_hold(trade: Trade):
   with ManagedSession() as session:
     trade = Trade.find(session, trade.id)
     trade.order_status = TradeStatus.ON_HOLD.value
+    trade.order_status_desc = ""
 
     hold_activity = TradeActivity(
       when=datetime.now(),
@@ -150,6 +155,7 @@ def trade_on_hold(trade: Trade):
     )
 
     session.add(hold_activity)
+    ui.trade_status_changed(trade, TradeStatus.ON_HOLD.value, "")
 
 def trade_status_changed(trade: Trade, status: TradeStatus, description: str):
   """
@@ -169,4 +175,5 @@ def trade_status_changed(trade: Trade, status: TradeStatus, description: str):
     )
 
     session.add(activity)
+    ui.trade_status_changed(trade, status.value, description)
 

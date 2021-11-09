@@ -49,15 +49,22 @@ const rowActionClicked = (action: string, trade: Trade) => {
 const columnDefs = [
   { field: "ticker", headerName: "Ticker" },
   { field: "orderStatus", headerName: "Status" },
-  { field: "orderStatusDesc", headerName: "Desc" },
+  { field: "orderStatusDesc", headerName: "Desc", flex: 1 },
   { field: "currentPositionSize", headerName: "Current position" },
   { field: "filled", headerName: "Filled" },
   { field: "priceAtOrder", headerName: "Price when ordered" },
   { field: "orderedAt", headerName: "Ordered at" },
   {
     field: "actions",
-    headerName: "Actions",
+    headerName: "",
     cellClass: "actions",
+    pinned: "right",
+    width: 65,
+    cellStyle() {
+      return {
+        padding: "0",
+      };
+    },
     cellRenderer: "ActionsCellRenderer",
     cellRendererParams: {
       click(type: string, trade: Trade) {

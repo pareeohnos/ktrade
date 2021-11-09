@@ -45,13 +45,58 @@
       AppPanel,
     },
     sockets: {
-      // tickerUpdated({ ticker, field, value }) {
-      //   const itemToUpdate = this.rowData[ticker];
-      //   itemToUpdate[field] = value;
-      //   this.gridApi.applyTransactionAsync({
-      //     update: [itemToUpdate]
-      //   });
-      // },
+      tradeFilled({ order_id, amount }: { order_id: number; amount: number }) {
+        let itemToUpdate: Trade = this.gridApi!.getRowNode(
+          order_id.toString()
+        )?.data;
+
+        if (itemToUpdate) {
+          // @ts-ignore
+          itemToUpdate.filled += amount;
+          itemToUpdate.currentPositionSize += amount;
+
+          this.gridApi?.applyTransactionAsync({
+            update: [itemToUpdate],
+          });
+        }
+      },
+      tradeSold({ order_id, amount }: { order_id: number; amount: number }) {
+        let itemToUpdate: Trade = this.gridApi!.getRowNode(
+          order_id.toString()
+        )?.data;
+
+        if (itemToUpdate) {
+          // @ts-ignore
+          itemToUpdate.currentPositionSize -= amount;
+
+          this.gridApi?.applyTransactionAsync({
+            update: [itemToUpdate],
+          });
+        }
+      },
+      tradeStatus({
+        order_id,
+        status,
+        description,
+      }: {
+        order_id: number;
+        status: string;
+        description: string;
+      }) {
+        let itemToUpdate: Trade = this.gridApi!.getRowNode(
+          order_id.toString()
+        )?.data;
+
+        if (itemToUpdate) {
+          // @ts-ignore
+          itemToUpdate.orderStatus = status;
+          itemToUpdate.orderStatusDesc = description;
+
+          this.gridApi?.applyTransactionAsync({
+            update: [itemToUpdate],
+          });
+        }
+      },
     },
     setup() {
       // const newTicker = ref("");
