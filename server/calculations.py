@@ -28,13 +28,10 @@ def calculate_position_sizes(watched_ticker: WatchedTicker):
   max_risk_percent = float(configuration_for("max_risk").value) / 100.0
   max_position_amount_percent = float(configuration_for("max_size").value) / 100.0
 
-  # We need to get the account size
-  account = Account.query.one()
-
   # Get our prices for things and account size
   stop_loss = watched_ticker.low
   current_price = watched_ticker.price
-  account_size = account.total_size
+  total_account_size = account_size()
 
   # We can't open a position if it's already at the stop loss
   if current_price == stop_loss:
@@ -47,8 +44,8 @@ def calculate_position_sizes(watched_ticker: WatchedTicker):
   # the number of shares we can buy, before we hit or exceed our
   # max amount we're prepared to spend based on risk
   loss_amount = current_price - stop_loss
-  max_risk_amount = account_size * max_risk_percent
-  max_position_amount = account_size * max_position_amount_percent
+  max_risk_amount = total_account_size * max_risk_percent
+  max_position_amount = total_account_size * max_position_amount_percent
   position_size = max_risk_amount / loss_amount
   
   # Calculate the value of this trade and make sure it doesn't exceed our
@@ -66,3 +63,21 @@ def calculate_position_sizes(watched_ticker: WatchedTicker):
     "position_size": math.floor(position_size),
     "stop_loss": stop_loss
   }
+
+def account_size():
+  """
+  Determines the size of the account. If the user has configured the app
+  to automatically fetch the account size then this will be stored in the
+  database. Otherwise, they will have specified a value to use for this.
+  """
+
+  fetch_account_size = configuration_for("fetch_account_size").value
+  fetch_account_size = int(fetch_account_size) == 1
+  if fetch_account_size:
+    # This will already be stored, so grap that
+    account = Account.query.one()
+    return account.total_size
+
+  else:
+    # Return the user-defined amount
+    return float(configuration_for("account_size").value)

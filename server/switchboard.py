@@ -79,7 +79,13 @@ class Switchboard:
 
     log.info("[Switchboard] Connected and listening")
 
-    self.tws.load_account_data()
+    fetch = configuration_for("fetch_account_size").value
+    load_account_data = int(fetch) == 1
+    if load_account_data:
+      self.tws.load_account_data()
+    else:
+      log.info(f'[Switchboard] Skipping account loading. Fixed capital size being used')
+
     self.watch_existing_tickers()
 
     while True:

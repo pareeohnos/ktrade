@@ -24,6 +24,8 @@ def configure():
   max_size = params['maxSize']
   tws_host = params['twsHost']
   tws_port = params['twsPort']
+  fetch_account_size = params['fetchAccountSize']
+  account_size = params['accountSize']
 
   # Save the config
   Configuration.query.delete()
@@ -32,6 +34,8 @@ def configure():
     Configuration(key="max_size", value=max_size),
     Configuration(key="tws_host", value=tws_host),
     Configuration(key="tws_port", value=tws_port),
+    Configuration(key="fetch_account_size", value=fetch_account_size),
+    Configuration(key="account_size", value=account_size),
   ]
 
   db.session.bulk_save_objects(objects)
