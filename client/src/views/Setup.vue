@@ -1,11 +1,32 @@
 <template>
   <div class="config flex justify-center">
-    <app-panel class="w-1/2">
+    <app-panel class="w-1/2 p-8">
       <app-header>Welcome to KTrade</app-header>
 
       <p class="mb-8">
         Lets get setup. Fill in the details below and we can get started
       </p>
+
+      <input
+        class="mb-4"
+        type="checkbox"
+        name="fetchAccountSize"
+        v-model="config.fetchAccountSize"
+      />
+      <label class="ml-4 mb-4" for="fetchAccountSize"
+        >Obtain account size automatically?</label
+      >
+
+      <div
+        v-if="!config.fetchAccountSize"
+        class="bg-gray-100 p-4 rounded-lg border border-gray-200 mb-4"
+      >
+        <app-input
+          v-model="config.accountSize"
+          label="Account size"
+          description="How much trading capital should KTrade use for its calculations"
+        />
+      </div>
 
       <app-input
         v-model="config.maxRisk"
@@ -57,6 +78,8 @@
         maxSize: 33,
         twsHost: "localhost",
         twsPort: 4000,
+        fetchAccountSize: true,
+        accountSize: 0,
       });
 
       return { config };
