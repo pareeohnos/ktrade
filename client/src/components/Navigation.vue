@@ -4,7 +4,7 @@
     <div class="flex flex-row mt-auto">
       <router-link class="menu-item" to="/">Dashboard</router-link>
       <router-link class="menu-item" to="/trades">Trades</router-link>
-      <router-link class="menu-item" to="/config">Settings</router-link>
+      <router-link class="menu-item" to="/settings">Settings</router-link>
     </div>
   </div>
 </template>

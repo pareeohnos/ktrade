@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import Dashboard from "../views/Home.vue";
 import Trades from "../views/Trades.vue";
-import Config from "../views/Config.vue";
+import Settings from "../views/Settings.vue";
 import Setup from "../views/Setup.vue";
 
 const routes: Array<RouteRecordRaw> = [
@@ -16,9 +16,9 @@ const routes: Array<RouteRecordRaw> = [
     component: Trades,
   },
   {
-    path: "/config",
-    name: "Config",
-    component: Config,
+    path: "/settings",
+    name: "Settings",
+    component: Settings,
   },
   {
     path: "/initial_setup",

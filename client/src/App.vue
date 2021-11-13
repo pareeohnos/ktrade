@@ -3,7 +3,7 @@
     <navigation class="flex-initial" v-if="!isSetup" />
     <app-notifications />
 
-    <div class="flex-1 p-8">
+    <div class="flex-1 p-8 overflow-auto">
       <router-view />
     </div>
   </div>
