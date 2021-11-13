@@ -91,6 +91,7 @@ class IBProvider(ProviderInterface):
     stop_order = Order()
     stop_order.action = "SELL"
     stop_order.orderType = "STP"
+    stop_order.tif = "GTC"
     stop_order.auxPrice = stop_loss
     stop_order.totalQuantity = position_size
     stop_order.orderId = self.api.next_request_id()
@@ -153,6 +154,7 @@ class IBProvider(ProviderInterface):
     stop_order = Order()
     stop_order.action = "SELL"
     stop_order.orderType = "STP"
+    stop_order.tif = "GTC"
     stop_order.auxPrice = trade.price_at_order
     stop_order.totalQuantity = stop_size
     stop_order.orderId = self.api.next_request_id()
