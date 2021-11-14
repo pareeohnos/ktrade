@@ -24,6 +24,7 @@ export const closePosition = (trade: Trade): Promise<void> => {
         group: "notifications",
         title: "Placed SELL order",
         text: "A SELL order was placed to close this position",
+        type: "success",
       });
     })
     .catch(errHandler);
@@ -45,6 +46,7 @@ export const deleteTrade = (trade: Trade): Promise<void> => {
         group: "notifications",
         title: "Deleted",
         text: "The trade was successfully deleted",
+        type: "success",
       });
     })
     .catch(errHandler);
@@ -73,6 +75,7 @@ export const trimPosition = (trade: Trade, amount: String): Promise<void> => {
           group: "notifications",
           title: "Pending",
           text: `Requested sell of 1/3 of ${trade.ticker}`,
+          type: "info",
         },
         2000
       );

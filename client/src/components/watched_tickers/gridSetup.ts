@@ -27,6 +27,7 @@ const rowActionClicked = (action: String, watchedTicker: WatchedTicker) => {
           group: "notifications",
           title: "Success",
           text: `${watchedTicker.ticker} was successfully unwatched`,
+          type: "success",
         },
         2000
       );
