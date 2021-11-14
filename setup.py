@@ -10,6 +10,7 @@ with open('LICENSE') as f:
 
 requires = [
     'flask==2.0.1',
+    'eventlet==0.30.2',
     'flask-cors==3.0.10',
     'sqlalchemy==1.4',
     'Flask-SQLAlchemy==2.5',
@@ -31,5 +32,6 @@ setup(
     url='https://github.com/pareeohnos/ktrade',
     license=license,
     packages=find_packages(exclude=('tests', 'docs')),
-    install_requires=requires
+    install_requires=requires,
+    scripts=['ktrade']
 )
