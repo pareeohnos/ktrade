@@ -68,6 +68,9 @@ class IBApi(EWrapper, EClient):
         end_time = datetime.now().strftime("%Y%m%d %H:%M:%S")
         seconds = seconds_since_open()
         self.reqHistoricalData(req_id, contract, end_time, f"{seconds} S", "1 secs", "TRADES", 1, 1, False, [])
+      else:
+        # Not open yet, so we'll get the last day just so we've got some data to work with
+        self.reqHistoricalData(req_id, contract, "", f"1 D", "1 day", "TRADES", 1, 1, False, [])
 
 
   def request_realtime_feed(self, contract: Contract, watched_ticker: WatchedTicker):

@@ -63,12 +63,8 @@ class IBProvider(ProviderInterface):
     log.debug("[IB] Request historical data for ADR calculation")
     self.api.request_historical_data(contract=contract, watched_ticker=watched_ticker, action="adr")
 
-    if is_market_open():
-      # Only do this if the market is open. If it isn't, then our values will be
-      # refreshed when it does open so we don't need to worry
-
-      log.debug("[IB] Request historical data for LOD and HOD values")
-      self.api.request_historical_data(contract=contract, watched_ticker=watched_ticker, action="prices")
+    log.debug("[IB] Request historical data for LOD and HOD values")
+    self.api.request_historical_data(contract=contract, watched_ticker=watched_ticker, action="prices")
     
 
   def request_realtime_feed(self, watched_ticker: WatchedTicker):
