@@ -10,6 +10,7 @@ from server.queue_messages.provider_error_message import ProviderErrorMessage
 from server.provider_actions import update_order_ids
 from threading import Thread
 from time import sleep
+from server.utils import is_market_open
 
 log = logging.getLogger(__name__)
 
@@ -51,15 +52,31 @@ class IBProvider(ProviderInterface):
     # We're all done
     self.connected = True
 
-  def request_realtime_feed(self, watched_ticker: int):
+  def update_prices(self, watched_ticker: WatchedTicker):
+    """
+    Attempts to obtain the High, Low, and ADR values for the
+    specified watched ticker.
+    """
+
+    contract = self.build_contract(watched_ticker.ticker)
+    
+    log.debug("[IB] Request historical data for ADR calculation")
+    self.api.request_historical_data(contract=contract, watched_ticker=watched_ticker, action="adr")
+
+    if is_market_open():
+      # Only do this if the market is open. If it isn't, then our values will be
+      # refreshed when it does open so we don't need to worry
+
+      log.debug("[IB] Request historical data for LOD and HOD values")
+      self.api.request_historical_data(contract=contract, watched_ticker=watched_ticker, action="prices")
+    
+
+  def request_realtime_feed(self, watched_ticker: WatchedTicker):
     """
     Requests a real-time feed for the specified watched ticker.
     """
     req_id = self.api.next_request_id()
     contract = self.build_contract(watched_ticker.ticker)
-
-    log.debug("[IB] Requesting historical data")
-    self.api.request_historical_data(contract=contract, watched_ticker=watched_ticker)
 
     log.debug("[IB] Registering for real-time feed")
     self.api.request_realtime_feed(contract=contract, watched_ticker=watched_ticker)

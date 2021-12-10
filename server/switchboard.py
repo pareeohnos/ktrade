@@ -239,6 +239,7 @@ class Switchboard:
     given ticker
     """
     log.debug(f"[Switchboard] Requesting real-time feed for {watched_ticker.ticker}")
+    self.tws.update_prices(watched_ticker)
     self.tws.request_realtime_feed(watched_ticker)
 
   def unwatch(self, watched_ticker: WatchedTicker):

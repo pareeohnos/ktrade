@@ -1,5 +1,6 @@
 import logging
 import re
+from datetime import datetime, timedelta
 
 from ibapi.client import EClient, TickAttribLast, TickAttrib, Order, ExecutionFilter
 from ibapi.wrapper import EWrapper, TickType, TickTypeEnum, BarData
@@ -11,6 +12,7 @@ from server.providers.ib.account_summary_actions import AccountSummaryActions
 from server.providers.ib.historical_data_actions import HistoricalDataActions
 from server.enums.trade_status import TradeStatus
 from server.price_cache import PriceCache
+from server.utils import is_market_open, seconds_since_open
 
 log = logging.getLogger(__name__)
 
@@ -41,7 +43,7 @@ class IBApi(EWrapper, EClient):
     self.req_id += 1
     return self.req_id
 
-  def request_historical_data(self, contract: Contract, watched_ticker: WatchedTicker):
+  def request_historical_data(self, contract: Contract, watched_ticker: WatchedTicker, action: str):
     """
     Makes a request to retrieve historical data for the past 20
     days for the specified watched ticker
@@ -51,10 +53,22 @@ class IBApi(EWrapper, EClient):
     self.historical_data_requests[req_id] = {
       "ticker": contract.symbol,
       "bars": [],
-      "watched_ticker": watched_ticker
+      "watched_ticker": watched_ticker,
+      "action": action
     }
 
-    self.reqHistoricalData(req_id, contract, "", "20 D", "1 day", "TRADES", 1, 1, False, [])
+    if action == "adr":
+      # For ADR, we request the last 20 days
+      now = datetime.today()
+      end_time = (datetime(now.year, now.month, now.day, 23, 59, 59, 50) - timedelta(days=1)).strftime("%Y%m%d %H:%M:%S")
+      self.reqHistoricalData(req_id, contract, end_time, "20 D", "1 day", "TRADES", 1, 1, False, [])
+    elif action == "prices":
+      # For prices, we request every second since the market opened this morning
+      if is_market_open():
+        end_time = datetime.now().strftime("%Y%m%d %H:%M:%S")
+        seconds = seconds_since_open()
+        self.reqHistoricalData(req_id, contract, end_time, f"{seconds} S", "1 secs", "TRADES", 1, 1, False, [])
+
 
   def request_realtime_feed(self, contract: Contract, watched_ticker: WatchedTicker):
     """
@@ -155,14 +169,17 @@ class IBApi(EWrapper, EClient):
     
     request = self.historical_data_requests[req_id]
     watched_ticker = request.get("watched_ticker")
+    request_action = request.get("action")
 
     action = HistoricalDataActions()
     prices = action.call(
       watched_ticker=watched_ticker,
-      bars=request.get("bars"))
+      bars=request.get("bars"),
+      action=request_action)
 
-    self.price_cache.update_cached_price(watched_ticker.id, "low", prices["low"])
-    self.price_cache.update_cached_price(watched_ticker.id, "high", prices["high"])
+    if request_action == "prices":
+      self.price_cache.update_cached_price(watched_ticker.id, "low", prices["low"])
+      self.price_cache.update_cached_price(watched_ticker.id, "high", prices["high"])
     
     del self.historical_data_requests[req_id]
 

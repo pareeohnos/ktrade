@@ -7,28 +7,31 @@ class ProviderInterface:
   broker/exchange, such as TWS
   """
 
-  def connect(app):
+  def connect(self, app):
     pass
 
-  def is_connected():
+  def is_connected(self):
     pass
 
-  def load_account_data():
+  def load_account_data(self):
     pass
 
-  def request_realtime_feed(watched_ticker: WatchedTicker):
+  def request_realtime_feed(self, watched_ticker: WatchedTicker):
     pass
 
-  def stop_realtime_feed(watched_ticker: WatchedTicker):
+  def stop_realtime_feed(self, watched_ticker: WatchedTicker):
+    pass
+
+  def update_prices(self, watched_ticker: WatchedTicker):
     pass
 
 
   # Main trade actions
-  def buy(trade: Trade, position_size: float, stop_loss: float):
+  def buy(self, trade: Trade, position_size: float, stop_loss: float):
     pass
 
-  def trim(trade: Trade, trim_size: float, stop_position: float, stop_size: float):
+  def trim(self, trade: Trade, trim_size: float, stop_position: float, stop_size: float):
     pass
 
-  def close_position(trade: Trade):
+  def close_position(self, trade: Trade):
     pass

@@ -12,25 +12,38 @@ class HistoricalDataActions:
   client related to historical data
   """
 
-  def call(self, watched_ticker: WatchedTicker, bars: list):
+  def call(self, watched_ticker: WatchedTicker, bars: list, action: str):
     """
     Given a series of bars from the IB client, updates the high/low
     values on the watched ticker. This method assumes the bars are in
     the correct order, as it will use the last bar supplied as the
     latest data.
     """
-    latest_bar = bars[-1]
-    high = latest_bar.high
-    low = latest_bar.low
 
-    adr = calculate_adr(bars)
+    if action == "adr":
+      adr = calculate_adr(bars)
+      ticker_updated(watched_ticker=watched_ticker, field="adr", value=adr)
 
-    ticker_updated(watched_ticker=watched_ticker, field="high", value=high)
-    ticker_updated(watched_ticker=watched_ticker, field="low", value=low)
-    ticker_updated(watched_ticker=watched_ticker, field="adr", value=adr)
+      return {
+        "adr": adr
+      }
 
-    return {
-      "high": high,
-      "low": low,
-      "adr": adr
-    }
+    elif action == "prices":
+      low = None
+      high = None
+
+      for bar in bars:
+        if low == None or bar.low < low:
+          low = bar.low
+
+        if high == None or bar.high > high:
+          high = bar.high
+
+      
+      ticker_updated(watched_ticker=watched_ticker, field="high", value=high)
+      ticker_updated(watched_ticker=watched_ticker, field="low", value=low)
+
+      return {
+        "high": high,
+        "low": low,
+      }
