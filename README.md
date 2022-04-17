@@ -30,7 +30,6 @@ pip install -f requirements.txt
 
 3. Prepare the database
 
-
 ```
 flask db upgrade
 ```
@@ -44,11 +43,10 @@ flask run
 5. Open your browser and go to
 
 ```
-http://localhost:5000
+http://127.0.0.1:5000
 ```
 
 On first load, you should get the configuration screen. Fill it out and save your settings.
-
 
 ### Notes
 
@@ -84,4 +82,3 @@ If you're enjoying KTrade and want to help continue it's development, or just wa
 A huge thank you to the following people, who have helped sponsor the development of KTrade
 
 ### Contributing
-

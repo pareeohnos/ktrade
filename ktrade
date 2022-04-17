@@ -49,5 +49,5 @@ def initialise_db():
 
 if __name__ == "__main__":
   print("[i] KTrade is running. Press ctrl+c to stop...")
-  webbrowser.open_new_tab("http://localhost:5000")
+  webbrowser.open_new_tab("http://127.0.0.1:5000")
   socketio.run(app, debug=False)
